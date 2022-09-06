@@ -6,4 +6,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface WalletCategoryRepository extends JpaRepository<WalletCategory, Long> {
+
+    public WalletCategory findWalletCategoryByWalletCategoryName(String walletCategoryName);
+
 }

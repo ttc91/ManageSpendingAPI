@@ -13,6 +13,8 @@ import java.util.function.Function;
 
 public interface AccountService {
 
+    Account findAccountByUsername(String username);
+
     List<Account> findAll();
 
     List<Account> findAll(Sort sort);

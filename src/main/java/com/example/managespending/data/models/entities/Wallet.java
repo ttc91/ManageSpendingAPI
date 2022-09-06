@@ -1,5 +1,6 @@
 package com.example.managespending.data.models.entities;
 
+import com.example.managespending.data.models.entities.key.WalletKey;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,14 +22,8 @@ import java.util.Set;
 @Table(name = "wallet")
 public class Wallet implements Serializable {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name = "wallet_id")
-    private Long id;
-
-    @Column(name = "wallet_name", length = 100, unique = true, nullable = false)
-    @NotNull(message = "Please input correct value of wallet name !!!")
-    private String walletName;
+    @EmbeddedId
+    private WalletKey id;
 
     @Column(name = "wallet_balance", nullable = false)
     @NotNull(message = "Please input balance !!!")
@@ -42,15 +37,15 @@ public class Wallet implements Serializable {
     @UpdateTimestamp
     private Date updatedDate;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "wallet_category_id", unique = false)
+    @ManyToOne
+    @JoinColumn(name = "wallet_category_id", nullable = false)
     @NotNull(message = "Please choose your wallet category !!!")
     private WalletCategory walletCategory;
 
-    @OneToMany(mappedBy = "wallet")
+    @OneToMany(mappedBy = "wallet", cascade = CascadeType.ALL)
     private Set<Transaction> transactions;
 
-    @OneToMany(mappedBy = "wallet")
+    @OneToMany(mappedBy = "wallet", cascade = CascadeType.ALL)
     private Set<Budget> budgets;
 
 }

@@ -13,7 +13,7 @@ import java.util.Date;
 public class Transaction implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "transaction_id")
     private Long id;
 
@@ -28,17 +28,20 @@ public class Transaction implements Serializable {
     @Column(name = "transaction_note", length = 500, nullable = true)
     private String transactionNote;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "wallet_id", nullable = false)
+    @ManyToOne
+    @JoinColumns({
+            @JoinColumn(name="account_id", referencedColumnName="account_id", nullable = false),
+            @JoinColumn(name="wallet_name", referencedColumnName="wallet_name", nullable = false)
+    })
     @NotNull(message = "Please choose your wallet !!!")
     private Wallet wallet;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "receipts_and_payments_id", nullable = false)
     @NotNull(message = "Please choose your receipts and payments in this transaction !!!")
-    private ReceiptsAndPayments receiptsAndPayments;
+    private RAP receiptsAndPayments;
 
-    @OneToOne(mappedBy = "transaction")
+    @OneToOne(mappedBy = "transaction", cascade = CascadeType.ALL)
     private Event event;
 
 }

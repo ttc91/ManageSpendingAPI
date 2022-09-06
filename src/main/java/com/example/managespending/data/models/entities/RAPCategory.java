@@ -15,18 +15,18 @@ import java.util.Set;
 
 @Entity
 @Table(name = "receipts_and_payments_category")
-public class ReceiptsAndPaymentsCategory implements Serializable {
+public class RAPCategory implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "receipts_and_payments_category_id")
     private Long id;
 
     @Column(name = "receipts_and_payments_category_name", nullable = false, length = 50, unique = true)
     @NotNull(message = "Please input correct value of budget category name !!!")
-    private String budgetCategoryName;
+    private String rapCategoryName;
 
-    @OneToMany(mappedBy = "receiptsAndPaymentsCategory")
-    private Set<ReceiptsAndPayments> receiptsAndPayments;
+    @OneToMany(mappedBy = "receiptsAndPaymentsCategory", cascade = CascadeType.ALL)
+    private Set<RAP> receiptsAndPayments;
 
 }

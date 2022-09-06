@@ -1,6 +1,7 @@
 package com.example.managespending.data.remotes.service.impl;
 
 import com.example.managespending.data.models.entities.Wallet;
+import com.example.managespending.data.models.entities.key.WalletKey;
 import com.example.managespending.data.remotes.repositories.WalletRepository;
 import com.example.managespending.data.remotes.service.WalletService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,8 +33,8 @@ public class WalletServiceImpl implements WalletService {
     }
 
     @Override
-    public List<Wallet> findAllById(Iterable<Long> longs) {
-        return repository.findAllById(longs);
+    public List<Wallet> findAllById(Iterable<WalletKey> walletKeys) {
+        return repository.findAllById(walletKeys);
     }
 
     @Override
@@ -62,8 +63,8 @@ public class WalletServiceImpl implements WalletService {
     }
 
     @Override
-    public void deleteAllByIdInBatch(Iterable<Long> longs) {
-        repository.deleteAllByIdInBatch(longs);
+    public void deleteAllByIdInBatch(Iterable<WalletKey> walletKeys) {
+        repository.deleteAllByIdInBatch(walletKeys);
     }
 
     @Override
@@ -72,8 +73,8 @@ public class WalletServiceImpl implements WalletService {
     }
 
     @Override
-    public Wallet getReferenceById(Long aLong) {
-        return repository.getReferenceById(aLong);
+    public Wallet getReferenceById(WalletKey walletKey) {
+        return repository.getReferenceById(walletKey);
     }
 
     @Override
@@ -97,13 +98,13 @@ public class WalletServiceImpl implements WalletService {
     }
 
     @Override
-    public Optional<Wallet> findById(Long aLong) {
-        return repository.findById(aLong);
+    public Optional<Wallet> findById(WalletKey walletKey) {
+        return repository.findById(walletKey);
     }
 
     @Override
-    public boolean existsById(Long aLong) {
-        return repository.existsById(aLong);
+    public boolean existsById(WalletKey walletKey) {
+        return repository.existsById(walletKey);
     }
 
     @Override
@@ -112,8 +113,8 @@ public class WalletServiceImpl implements WalletService {
     }
 
     @Override
-    public void deleteById(Long aLong) {
-        repository.deleteById(aLong);
+    public void deleteById(WalletKey walletKey) {
+        repository.deleteById(walletKey);
     }
 
     @Override
@@ -122,8 +123,8 @@ public class WalletServiceImpl implements WalletService {
     }
 
     @Override
-    public void deleteAllById(Iterable<? extends Long> longs) {
-        repository.deleteAllById(longs);
+    public void deleteAllById(Iterable<? extends WalletKey> walletKeys) {
+        repository.deleteAllById(walletKeys);
     }
 
     @Override

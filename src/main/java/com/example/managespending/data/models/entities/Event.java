@@ -18,7 +18,7 @@ import java.util.Date;
 public class Event implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "event_id")
     private Long id;
 
@@ -38,7 +38,7 @@ public class Event implements Serializable {
     @Column(name = "event_status", columnDefinition="BOOLEAN DEFAULT FALSE NOT NULL")
     private boolean eventStatus;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne
     @JoinColumn(name = "transaction_id", nullable = false, referencedColumnName = "transaction_id")
     @NotNull(message = "Please input your transaction !!!")
     private Transaction transaction;

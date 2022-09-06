@@ -14,30 +14,30 @@ import java.util.Set;
 
 @Entity
 @Table(name = "receipts_and_payments")
-public class ReceiptsAndPayments {
+public class RAP {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "receipts_and_payments_id")
     private Long id;
 
     @Column(name = "receipts_and_payments_name", nullable = false, length = 50, unique = true)
     @NotNull(message = "Please input correct value of budget name !!!")
-    private String budgetName;
+    private String rapName;
 
     @Column(name = "receipts_and_payments_logo", nullable = false, length = 1000)
     @NotNull(message = "Please input budget logo !!!")
-    private String budgetLogo;
+    private String rapLogo;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "receipts_and_payments_category_id", nullable = false)
     @NotNull(message = "Please input choose your category of receipts and payments !!!")
-    private ReceiptsAndPaymentsCategory receiptsAndPaymentsCategory;
+    private RAPCategory rapCategory;
 
-    @OneToMany(mappedBy = "receiptsAndPayments")
+    @OneToMany(mappedBy = "receiptsAndPayments", cascade = CascadeType.ALL)
     private Set<Transaction> transactions;
 
-    @OneToMany(mappedBy = "receiptsAndPayments")
+    @OneToMany(mappedBy = "receiptsAndPayments", cascade = CascadeType.ALL)
     private Set<Budget> budgets;
 
 }

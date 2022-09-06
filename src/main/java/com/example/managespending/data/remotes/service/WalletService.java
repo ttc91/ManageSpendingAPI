@@ -1,6 +1,7 @@
 package com.example.managespending.data.remotes.service;
 
 import com.example.managespending.data.models.entities.Wallet;
+import com.example.managespending.data.models.entities.key.WalletKey;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,11 +13,13 @@ import java.util.Optional;
 import java.util.function.Function;
 
 public interface WalletService {
+
+
     List<Wallet> findAll();
 
     List<Wallet> findAll(Sort sort);
 
-    List<Wallet> findAllById(Iterable<Long> longs);
+    List<Wallet> findAllById(Iterable<WalletKey> walletKeys);
 
     <S extends Wallet> List<S> saveAll(Iterable<S> entities);
 
@@ -28,11 +31,11 @@ public interface WalletService {
 
     void deleteAllInBatch(Iterable<Wallet> entities);
 
-    void deleteAllByIdInBatch(Iterable<Long> longs);
+    void deleteAllByIdInBatch(Iterable<WalletKey> walletKeys);
 
     void deleteAllInBatch();
 
-    Wallet getReferenceById(Long aLong);
+    Wallet getReferenceById(WalletKey walletKey);
 
     <S extends Wallet> List<S> findAll(Example<S> example);
 
@@ -42,17 +45,17 @@ public interface WalletService {
 
     <S extends Wallet> S save(S entity);
 
-    Optional<Wallet> findById(Long aLong);
+    Optional<Wallet> findById(WalletKey walletKey);
 
-    boolean existsById(Long aLong);
+    boolean existsById(WalletKey walletKey);
 
     long count();
 
-    void deleteById(Long aLong);
+    void deleteById(WalletKey walletKey);
 
     void delete(Wallet entity);
 
-    void deleteAllById(Iterable<? extends Long> longs);
+    void deleteAllById(Iterable<? extends WalletKey> walletKeys);
 
     void deleteAll(Iterable<? extends Wallet> entities);
 

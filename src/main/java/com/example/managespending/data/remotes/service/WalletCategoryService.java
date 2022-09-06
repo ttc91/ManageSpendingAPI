@@ -12,6 +12,8 @@ import java.util.Optional;
 import java.util.function.Function;
 
 public interface WalletCategoryService {
+    WalletCategory findWalletCategoryByWalletCategoryName(String walletCategoryName);
+
     List<WalletCategory> findAll();
 
     List<WalletCategory> findAll(Sort sort);

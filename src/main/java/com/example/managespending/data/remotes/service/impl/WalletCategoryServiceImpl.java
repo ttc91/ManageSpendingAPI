@@ -22,6 +22,11 @@ public class WalletCategoryServiceImpl implements WalletCategoryService {
     private WalletCategoryRepository repository;
 
     @Override
+    public WalletCategory findWalletCategoryByWalletCategoryName(String walletCategoryName) {
+        return repository.findWalletCategoryByWalletCategoryName(walletCategoryName);
+    }
+
+    @Override
     public List<WalletCategory> findAll() {
         return repository.findAll();
     }

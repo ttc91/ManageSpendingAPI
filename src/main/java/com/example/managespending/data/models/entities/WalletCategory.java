@@ -18,7 +18,7 @@ import java.util.Set;
 public class WalletCategory implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "wallet_category_id")
     private Long id;
 
@@ -26,6 +26,6 @@ public class WalletCategory implements Serializable {
     @NotNull(message = "Please input correct value of wallet category name !!!")
     private String walletCategoryName;
 
-    @OneToMany(mappedBy = "walletCategory")
+    @OneToMany(mappedBy = "walletCategory", cascade = CascadeType.ALL)
     private Set<Wallet> wallets;
 }

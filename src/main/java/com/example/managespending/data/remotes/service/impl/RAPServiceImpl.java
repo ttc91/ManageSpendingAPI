@@ -1,8 +1,8 @@
 package com.example.managespending.data.remotes.service.impl;
 
-import com.example.managespending.data.models.entities.ReceiptsAndPaymentsCategory;
-import com.example.managespending.data.remotes.repositories.ReceiptsAndPaymentsCategoryRepository;
-import com.example.managespending.data.remotes.service.ReceiptsAndPaymentsCategoryService;
+import com.example.managespending.data.models.entities.RAP;
+import com.example.managespending.data.remotes.repositories.RAPRepository;
+import com.example.managespending.data.remotes.service.RAPService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
@@ -16,28 +16,28 @@ import java.util.Optional;
 import java.util.function.Function;
 
 @Service
-public class ReceiptsAndPaymentsCategoryServiceImpl implements ReceiptsAndPaymentsCategoryService {
+public class RAPServiceImpl implements RAPService {
 
     @Autowired
-    private ReceiptsAndPaymentsCategoryRepository repository;
+    private RAPRepository repository;
 
     @Override
-    public List<ReceiptsAndPaymentsCategory> findAll() {
+    public List<RAP> findAll() {
         return repository.findAll();
     }
 
     @Override
-    public List<ReceiptsAndPaymentsCategory> findAll(Sort sort) {
+    public List<RAP> findAll(Sort sort) {
         return repository.findAll(sort);
     }
 
     @Override
-    public List<ReceiptsAndPaymentsCategory> findAllById(Iterable<Long> longs) {
+    public List<RAP> findAllById(Iterable<Long> longs) {
         return repository.findAllById(longs);
     }
 
     @Override
-    public <S extends ReceiptsAndPaymentsCategory> List<S> saveAll(Iterable<S> entities) {
+    public <S extends RAP> List<S> saveAll(Iterable<S> entities) {
         return repository.saveAll(entities);
     }
 
@@ -47,17 +47,17 @@ public class ReceiptsAndPaymentsCategoryServiceImpl implements ReceiptsAndPaymen
     }
 
     @Override
-    public <S extends ReceiptsAndPaymentsCategory> S saveAndFlush(S entity) {
+    public <S extends RAP> S saveAndFlush(S entity) {
         return repository.saveAndFlush(entity);
     }
 
     @Override
-    public <S extends ReceiptsAndPaymentsCategory> List<S> saveAllAndFlush(Iterable<S> entities) {
+    public <S extends RAP> List<S> saveAllAndFlush(Iterable<S> entities) {
         return repository.saveAllAndFlush(entities);
     }
 
     @Override
-    public void deleteAllInBatch(Iterable<ReceiptsAndPaymentsCategory> entities) {
+    public void deleteAllInBatch(Iterable<RAP> entities) {
         repository.deleteAllInBatch(entities);
     }
 
@@ -72,32 +72,32 @@ public class ReceiptsAndPaymentsCategoryServiceImpl implements ReceiptsAndPaymen
     }
 
     @Override
-    public ReceiptsAndPaymentsCategory getReferenceById(Long aLong) {
+    public RAP getReferenceById(Long aLong) {
         return repository.getReferenceById(aLong);
     }
 
     @Override
-    public <S extends ReceiptsAndPaymentsCategory> List<S> findAll(Example<S> example) {
+    public <S extends RAP> List<S> findAll(Example<S> example) {
         return repository.findAll(example);
     }
 
     @Override
-    public <S extends ReceiptsAndPaymentsCategory> List<S> findAll(Example<S> example, Sort sort) {
+    public <S extends RAP> List<S> findAll(Example<S> example, Sort sort) {
         return repository.findAll(example, sort);
     }
 
     @Override
-    public Page<ReceiptsAndPaymentsCategory> findAll(Pageable pageable) {
+    public Page<RAP> findAll(Pageable pageable) {
         return repository.findAll(pageable);
     }
 
     @Override
-    public <S extends ReceiptsAndPaymentsCategory> S save(S entity) {
+    public <S extends RAP> S save(S entity) {
         return repository.save(entity);
     }
 
     @Override
-    public Optional<ReceiptsAndPaymentsCategory> findById(Long aLong) {
+    public Optional<RAP> findById(Long aLong) {
         return repository.findById(aLong);
     }
 
@@ -117,7 +117,7 @@ public class ReceiptsAndPaymentsCategoryServiceImpl implements ReceiptsAndPaymen
     }
 
     @Override
-    public void delete(ReceiptsAndPaymentsCategory entity) {
+    public void delete(RAP entity) {
         repository.delete(entity);
     }
 
@@ -127,7 +127,7 @@ public class ReceiptsAndPaymentsCategoryServiceImpl implements ReceiptsAndPaymen
     }
 
     @Override
-    public void deleteAll(Iterable<? extends ReceiptsAndPaymentsCategory> entities) {
+    public void deleteAll(Iterable<? extends RAP> entities) {
         repository.deleteAll(entities);
     }
 
@@ -137,27 +137,27 @@ public class ReceiptsAndPaymentsCategoryServiceImpl implements ReceiptsAndPaymen
     }
 
     @Override
-    public <S extends ReceiptsAndPaymentsCategory> Optional<S> findOne(Example<S> example) {
+    public <S extends RAP> Optional<S> findOne(Example<S> example) {
         return repository.findOne(example);
     }
 
     @Override
-    public <S extends ReceiptsAndPaymentsCategory> Page<S> findAll(Example<S> example, Pageable pageable) {
+    public <S extends RAP> Page<S> findAll(Example<S> example, Pageable pageable) {
         return repository.findAll(example, pageable);
     }
 
     @Override
-    public <S extends ReceiptsAndPaymentsCategory> long count(Example<S> example) {
+    public <S extends RAP> long count(Example<S> example) {
         return repository.count(example);
     }
 
     @Override
-    public <S extends ReceiptsAndPaymentsCategory> boolean exists(Example<S> example) {
+    public <S extends RAP> boolean exists(Example<S> example) {
         return repository.exists(example);
     }
 
     @Override
-    public <S extends ReceiptsAndPaymentsCategory, R> R findBy(Example<S> example, Function<FluentQuery.FetchableFluentQuery<S>, R> queryFunction) {
+    public <S extends RAP, R> R findBy(Example<S> example, Function<FluentQuery.FetchableFluentQuery<S>, R> queryFunction) {
         return repository.findBy(example, queryFunction);
     }
 }

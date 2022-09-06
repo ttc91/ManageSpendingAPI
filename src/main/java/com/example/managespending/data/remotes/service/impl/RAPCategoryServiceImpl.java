@@ -1,8 +1,8 @@
 package com.example.managespending.data.remotes.service.impl;
 
-import com.example.managespending.data.models.entities.ReceiptsAndPayments;
-import com.example.managespending.data.remotes.repositories.ReceiptsAndPaymentsRepository;
-import com.example.managespending.data.remotes.service.ReceiptsAndPaymentsService;
+import com.example.managespending.data.models.entities.RAPCategory;
+import com.example.managespending.data.remotes.repositories.RAPCategoryRepository;
+import com.example.managespending.data.remotes.service.RAPCategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
@@ -16,28 +16,33 @@ import java.util.Optional;
 import java.util.function.Function;
 
 @Service
-public class ReceiptsAndPaymentsServiceImpl implements ReceiptsAndPaymentsService {
+public class RAPCategoryServiceImpl implements RAPCategoryService {
 
     @Autowired
-    private ReceiptsAndPaymentsRepository repository;
+    private RAPCategoryRepository repository;
 
     @Override
-    public List<ReceiptsAndPayments> findAll() {
+    public RAPCategory findRAPCategoryByRapCategoryName(String receiptsAndPaymentsCategoryName) {
+        return repository.findRAPCategoryByRapCategoryName(receiptsAndPaymentsCategoryName);
+    }
+
+    @Override
+    public List<RAPCategory> findAll() {
         return repository.findAll();
     }
 
     @Override
-    public List<ReceiptsAndPayments> findAll(Sort sort) {
+    public List<RAPCategory> findAll(Sort sort) {
         return repository.findAll(sort);
     }
 
     @Override
-    public List<ReceiptsAndPayments> findAllById(Iterable<Long> longs) {
+    public List<RAPCategory> findAllById(Iterable<Long> longs) {
         return repository.findAllById(longs);
     }
 
     @Override
-    public <S extends ReceiptsAndPayments> List<S> saveAll(Iterable<S> entities) {
+    public <S extends RAPCategory> List<S> saveAll(Iterable<S> entities) {
         return repository.saveAll(entities);
     }
 
@@ -47,17 +52,17 @@ public class ReceiptsAndPaymentsServiceImpl implements ReceiptsAndPaymentsServic
     }
 
     @Override
-    public <S extends ReceiptsAndPayments> S saveAndFlush(S entity) {
+    public <S extends RAPCategory> S saveAndFlush(S entity) {
         return repository.saveAndFlush(entity);
     }
 
     @Override
-    public <S extends ReceiptsAndPayments> List<S> saveAllAndFlush(Iterable<S> entities) {
+    public <S extends RAPCategory> List<S> saveAllAndFlush(Iterable<S> entities) {
         return repository.saveAllAndFlush(entities);
     }
 
     @Override
-    public void deleteAllInBatch(Iterable<ReceiptsAndPayments> entities) {
+    public void deleteAllInBatch(Iterable<RAPCategory> entities) {
         repository.deleteAllInBatch(entities);
     }
 
@@ -72,32 +77,32 @@ public class ReceiptsAndPaymentsServiceImpl implements ReceiptsAndPaymentsServic
     }
 
     @Override
-    public ReceiptsAndPayments getReferenceById(Long aLong) {
+    public RAPCategory getReferenceById(Long aLong) {
         return repository.getReferenceById(aLong);
     }
 
     @Override
-    public <S extends ReceiptsAndPayments> List<S> findAll(Example<S> example) {
+    public <S extends RAPCategory> List<S> findAll(Example<S> example) {
         return repository.findAll(example);
     }
 
     @Override
-    public <S extends ReceiptsAndPayments> List<S> findAll(Example<S> example, Sort sort) {
+    public <S extends RAPCategory> List<S> findAll(Example<S> example, Sort sort) {
         return repository.findAll(example, sort);
     }
 
     @Override
-    public Page<ReceiptsAndPayments> findAll(Pageable pageable) {
+    public Page<RAPCategory> findAll(Pageable pageable) {
         return repository.findAll(pageable);
     }
 
     @Override
-    public <S extends ReceiptsAndPayments> S save(S entity) {
+    public <S extends RAPCategory> S save(S entity) {
         return repository.save(entity);
     }
 
     @Override
-    public Optional<ReceiptsAndPayments> findById(Long aLong) {
+    public Optional<RAPCategory> findById(Long aLong) {
         return repository.findById(aLong);
     }
 
@@ -117,7 +122,7 @@ public class ReceiptsAndPaymentsServiceImpl implements ReceiptsAndPaymentsServic
     }
 
     @Override
-    public void delete(ReceiptsAndPayments entity) {
+    public void delete(RAPCategory entity) {
         repository.delete(entity);
     }
 
@@ -127,7 +132,7 @@ public class ReceiptsAndPaymentsServiceImpl implements ReceiptsAndPaymentsServic
     }
 
     @Override
-    public void deleteAll(Iterable<? extends ReceiptsAndPayments> entities) {
+    public void deleteAll(Iterable<? extends RAPCategory> entities) {
         repository.deleteAll(entities);
     }
 
@@ -137,27 +142,27 @@ public class ReceiptsAndPaymentsServiceImpl implements ReceiptsAndPaymentsServic
     }
 
     @Override
-    public <S extends ReceiptsAndPayments> Optional<S> findOne(Example<S> example) {
+    public <S extends RAPCategory> Optional<S> findOne(Example<S> example) {
         return repository.findOne(example);
     }
 
     @Override
-    public <S extends ReceiptsAndPayments> Page<S> findAll(Example<S> example, Pageable pageable) {
+    public <S extends RAPCategory> Page<S> findAll(Example<S> example, Pageable pageable) {
         return repository.findAll(example, pageable);
     }
 
     @Override
-    public <S extends ReceiptsAndPayments> long count(Example<S> example) {
+    public <S extends RAPCategory> long count(Example<S> example) {
         return repository.count(example);
     }
 
     @Override
-    public <S extends ReceiptsAndPayments> boolean exists(Example<S> example) {
+    public <S extends RAPCategory> boolean exists(Example<S> example) {
         return repository.exists(example);
     }
 
     @Override
-    public <S extends ReceiptsAndPayments, R> R findBy(Example<S> example, Function<FluentQuery.FetchableFluentQuery<S>, R> queryFunction) {
+    public <S extends RAPCategory, R> R findBy(Example<S> example, Function<FluentQuery.FetchableFluentQuery<S>, R> queryFunction) {
         return repository.findBy(example, queryFunction);
     }
 }

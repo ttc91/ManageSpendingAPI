@@ -9,10 +9,11 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class AccountRegistrationDto implements Serializable {
+public class AccountUpdateDto implements Serializable {
 
     private String username;
-    private String password;
-    private String rePassword;
+    private String oldPassword;
+    private String newPassword;
+    private String reNewPassword;
 
 }

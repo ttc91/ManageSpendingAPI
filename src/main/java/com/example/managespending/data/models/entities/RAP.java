@@ -37,7 +37,7 @@ public class RAP {
     @OneToMany(mappedBy = "receiptsAndPayments", cascade = CascadeType.ALL)
     private Set<Transaction> transactions;
 
-    @OneToMany(mappedBy = "receiptsAndPayments", cascade = CascadeType.ALL)
-    private Set<Budget> budgets;
+    @OneToOne(mappedBy = "receiptsAndPayments", cascade = CascadeType.ALL)
+    private Budget budgets;
 
 }

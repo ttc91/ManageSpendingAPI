@@ -34,15 +34,15 @@ public class Budget implements Serializable {
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumns({
-            @JoinColumn(name="account_id", referencedColumnName="account_id", nullable = false),
-            @JoinColumn(name="wallet_name", referencedColumnName="wallet_name", nullable = false)
+            @JoinColumn(name = "account_id", referencedColumnName = "account_id", nullable = false),
+            @JoinColumn(name = "wallet_name", referencedColumnName = "wallet_name", nullable = false)
     })
     @NotNull(message = "Please choose your wallet !!!")
     private Wallet wallet;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "receipts_and_payments_id", nullable = false)
     @NotNull(message = "Please choose your receipts and payments in this transaction !!!")
-    private RAP receiptsAndPayments;
+    private RAP rap;
 
 }

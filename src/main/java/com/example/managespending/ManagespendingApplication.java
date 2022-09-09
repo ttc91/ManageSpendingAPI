@@ -13,7 +13,7 @@ public class ManagespendingApplication {
     }
 
     @Bean
-    public ModelMapper modelMapper(){
+    public ModelMapper modelMapper() {
         return new ModelMapper();
     }
 

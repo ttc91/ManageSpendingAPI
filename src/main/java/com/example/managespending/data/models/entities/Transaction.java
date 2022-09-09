@@ -1,5 +1,8 @@
 package com.example.managespending.data.models.entities;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
@@ -9,6 +12,9 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
 @Table(name = "transaction")
 public class Transaction implements Serializable {
 
@@ -30,8 +36,8 @@ public class Transaction implements Serializable {
 
     @ManyToOne
     @JoinColumns({
-            @JoinColumn(name="account_id", referencedColumnName="account_id", nullable = false),
-            @JoinColumn(name="wallet_name", referencedColumnName="wallet_name", nullable = false)
+            @JoinColumn(name = "account_id", referencedColumnName = "account_id", nullable = false),
+            @JoinColumn(name = "wallet_name", referencedColumnName = "wallet_name", nullable = false)
     })
     @NotNull(message = "Please choose your wallet !!!")
     private Wallet wallet;
@@ -41,7 +47,8 @@ public class Transaction implements Serializable {
     @NotNull(message = "Please choose your receipts and payments in this transaction !!!")
     private RAP receiptsAndPayments;
 
-    @OneToOne(mappedBy = "transaction", cascade = CascadeType.ALL)
+    @ManyToOne
+    @JoinColumn(name = "transaction", nullable = true)
     private Event event;
 
 }

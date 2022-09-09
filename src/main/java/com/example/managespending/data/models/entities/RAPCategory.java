@@ -26,7 +26,11 @@ public class RAPCategory implements Serializable {
     @NotNull(message = "Please input correct value of budget category name !!!")
     private String rapCategoryName;
 
-    @OneToMany(mappedBy = "receiptsAndPaymentsCategory", cascade = CascadeType.ALL)
+    @Column(name="receipts_and_payments_category_type", nullable = false, length = 50, unique = true)
+    @NotNull(message = "Please select your type of your budget category !!!")
+    private String rapCategoryType;
+
+    @OneToMany(mappedBy = "rapCategory", cascade = CascadeType.ALL)
     private Set<RAP> receiptsAndPayments;
 
 }

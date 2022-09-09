@@ -12,6 +12,9 @@ import java.util.Optional;
 import java.util.function.Function;
 
 public interface EventService {
+
+    Event findEventByEventName(String eventName);
+
     List<Event> findAll();
 
     List<Event> findAll(Sort sort);

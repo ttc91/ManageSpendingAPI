@@ -22,6 +22,11 @@ public class BudgetServiceImpl implements BudgetService {
     private BudgetRepository repository;
 
     @Override
+    public Budget findBudgetByRAPName(String rapName) {
+        return repository.findBudgetByRAPName(rapName);
+    }
+
+    @Override
     public List<Budget> findAll() {
         return repository.findAll();
     }

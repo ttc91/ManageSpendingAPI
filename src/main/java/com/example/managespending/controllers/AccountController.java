@@ -26,45 +26,44 @@ public class AccountController {
     private ModelMapper modelMapper;
 
     @PostMapping(PathApi.MODEL_INSERT_DOMAIN)
-    public ResponseEntity<Account> insert(@RequestBody AccountRegistrationDto request){
+    public ResponseEntity<Account> insert(@RequestBody AccountRegistrationDto request) {
 
-        if(request.getPassword().equals(request.getRePassword())){
-
+        if (request.getPassword().equals(request.getRePassword())) {
             Account account = modelMapper.map(request, Account.class);
             account.setPassword(BCrypt.hashpw(account.getPassword(), BCrypt.gensalt(12)));
             service.save(account);
             return new ResponseEntity<>(account, HttpStatus.CREATED);
 
-        }else {
+        } else {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
     }
 
-    @PutMapping (PathApi.MODEL_UPDATE_DOMAIN)
-    public ResponseEntity<Account> update(@RequestBody AccountUpdateDto request){
+    @PutMapping(PathApi.MODEL_UPDATE_DOMAIN)
+    public ResponseEntity<Account> update(@RequestBody AccountUpdateDto request) {
 
         Account account = service.findAccountByUsername(request.getUsername());
-        if(account != null && BCrypt.checkpw(request.getOldPassword(), account.getPassword()) &&
-                request.getNewPassword().equals(request.getReNewPassword()) && (request.getOldPassword() != request.getNewPassword())){
+        if (account != null && BCrypt.checkpw(request.getOldPassword(), account.getPassword()) &&
+                request.getNewPassword().equals(request.getReNewPassword()) && (request.getOldPassword() != request.getNewPassword())) {
 
             account.setPassword(BCrypt.hashpw(request.getNewPassword(), BCrypt.gensalt(12)));
             service.save(account);
             return new ResponseEntity<>(account, HttpStatus.UPGRADE_REQUIRED);
 
-        }else {
+        } else {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
     @DeleteMapping(PathApi.MODEL_DELETE_DOMAIN)
-    public ResponseEntity<Account> delete(@RequestBody AccountDeleteDto request){
+    public ResponseEntity<Account> delete(@RequestBody AccountDeleteDto request) {
 
         Account account = service.findAccountByUsername(request.getUsername());
-        if(request != null){
+        if (request != null) {
             service.delete(account);
             return new ResponseEntity<>(account, HttpStatus.UPGRADE_REQUIRED);
-        }else {
+        } else {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 

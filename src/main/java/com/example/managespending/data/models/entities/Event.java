@@ -8,6 +8,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -35,12 +36,10 @@ public class Event implements Serializable {
     @Temporal(TemporalType.DATE)
     private Date endDate;
 
-    @Column(name = "event_status", columnDefinition="BOOLEAN DEFAULT FALSE NOT NULL")
-    private boolean eventStatus;
+    @Column(name = "event_status", columnDefinition="INTEGER DEFAULT 0 NOT NULL")
+    private int eventStatus;
 
-    @OneToOne
-    @JoinColumn(name = "transaction_id", nullable = false, referencedColumnName = "transaction_id")
-    @NotNull(message = "Please input your transaction !!!")
-    private Transaction transaction;
+    @OneToMany(mappedBy = "event",cascade = CascadeType.ALL)
+    private Set<Transaction> transaction;
 
 }

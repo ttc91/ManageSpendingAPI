@@ -13,9 +13,6 @@ import java.util.function.Function;
 
 public interface BudgetService {
 
-
-    Budget findBudgetByRAPName(String rapName);
-
     List<Budget> findAll();
 
     List<Budget> findAll(Sort sort);

@@ -14,7 +14,7 @@ import java.util.function.Function;
 public interface RAPCategoryService {
 
 
-    RAPCategory findRAPCategoryByRapCategoryName(String receiptsAndPaymentsCategoryName);
+    //RAPCategory findRAPCategoryByRapCategoryName(String receiptsAndPaymentsCategoryName);
 
     List<RAPCategory> findAll();
 

@@ -10,6 +10,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -21,23 +22,26 @@ public class Account implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "account_id")
-    private Long id;
+    @Column
+    private Long accountId;
 
-    @Column(name = "account_username", length = 30, nullable = false, unique = true)
+    @Column(length = 30, nullable = false, unique = true)
     @NotNull(message = "Please input correct value of username !!!")
-    private String username;
+    private String accountUsername;
 
-    @Column(name = "account_password", length = 255, nullable = false)
+    @Column(nullable = false)
     @NotNull(message = "Please input correct value of password !!!")
-    private String password;
+    private String accountPassword;
 
-    @Column(name = "account_create_date", nullable = false)
+    @Column(nullable = false)
     @CreationTimestamp
     private Date createdDate;
 
-    @Column(name = "account_update_date", nullable = false)
+    @Column(nullable = false)
     @UpdateTimestamp
     private Date updatedDate;
+
+    @OneToMany(cascade = {CascadeType.REMOVE}, mappedBy = "account")
+    private Set<Wallet> wallets;
 
 }

@@ -13,7 +13,8 @@ import java.util.function.Function;
 
 public interface RAPService {
 
-    RAP findRAPByRapName (String rapName);
+    //RAP findRAPByRapName (String rapName);
+
     List<RAP> findAll();
 
     List<RAP> findAll(Sort sort);

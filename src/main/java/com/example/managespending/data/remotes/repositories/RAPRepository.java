@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface RAPRepository extends JpaRepository<RAP, Long> {
-    public RAP findRAPByRapName (String rapName);
+    //public RAP findRAPByRapName (String rapName);
 }

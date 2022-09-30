@@ -21,10 +21,10 @@ public class RAPCategoryServiceImpl implements RAPCategoryService {
     @Autowired
     private RAPCategoryRepository repository;
 
-    @Override
-    public RAPCategory findRAPCategoryByRapCategoryName(String receiptsAndPaymentsCategoryName) {
-        return repository.findRAPCategoryByRapCategoryName(receiptsAndPaymentsCategoryName);
-    }
+//    @Override
+//    public RAPCategory findRAPCategoryByRapCategoryName(String receiptsAndPaymentsCategoryName) {
+//        return repository.findRAPCategoryByRapCategoryName(receiptsAndPaymentsCategoryName);
+//    }
 
     @Override
     public List<RAPCategory> findAll() {

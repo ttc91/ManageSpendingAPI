@@ -13,7 +13,7 @@ import java.util.function.Function;
 
 public interface EventService {
 
-    Event findEventByEventName(String eventName);
+    //Event findEventByEventName(String eventName);
 
     List<Event> findAll();
 

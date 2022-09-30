@@ -21,10 +21,10 @@ public class RAPServiceImpl implements RAPService {
     @Autowired
     private RAPRepository repository;
 
-    @Override
-    public RAP findRAPByRapName(String rapName) {
-        return repository.findRAPByRapName(rapName);
-    }
+//    @Override
+//    //public RAP findRAPByRapName(String rapName) {
+//        return repository.findRAPByRapName(rapName);
+//    }
 
     @Override
     public List<RAP> findAll() {

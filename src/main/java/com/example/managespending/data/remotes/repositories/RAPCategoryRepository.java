@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface RAPCategoryRepository extends JpaRepository<RAPCategory, Long> {
 
-    public RAPCategory findRAPCategoryByRapCategoryName(String rapCategoryName);
+    //public RAPCategory findRAPCategoryByRapCategoryName(String rapCategoryName);
 
 }

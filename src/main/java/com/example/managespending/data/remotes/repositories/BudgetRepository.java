@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface BudgetRepository extends JpaRepository<Budget, Long> {
-    public Budget findBudgetByRap (RAP rap);
+    //public Budget findBudgetByRap (RAP rap);
 }

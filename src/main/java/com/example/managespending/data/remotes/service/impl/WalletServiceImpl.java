@@ -1,164 +1,216 @@
 package com.example.managespending.data.remotes.service.impl;
 
+import com.example.managespending.data.mapper.WalletMapper;
+import com.example.managespending.data.models.dto.AccountDTO;
+import com.example.managespending.data.models.dto.WalletDTO;
+import com.example.managespending.data.models.dto.base.BaseDTO;
+import com.example.managespending.data.models.dto.base.ResponseDTO;
+import com.example.managespending.data.models.dto.other.ResponseCode;
+import com.example.managespending.data.models.entities.Account;
 import com.example.managespending.data.models.entities.Wallet;
-import com.example.managespending.data.models.entities.key.WalletKey;
+import com.example.managespending.data.remotes.repositories.AccountRepository;
 import com.example.managespending.data.remotes.repositories.WalletRepository;
 import com.example.managespending.data.remotes.service.WalletService;
+import com.example.managespending.data.remotes.service.base.BaseService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.repository.query.FluentQuery;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
-import java.util.function.Function;
+
 
 @Service
-public class WalletServiceImpl implements WalletService {
+public class WalletServiceImpl extends BaseService<BaseDTO> implements WalletService {
 
     @Autowired
-    private WalletRepository repository;
+    WalletRepository walletRepository;
+
+    @Autowired
+    AccountRepository accountRepository;
+
+    @Autowired
+    WalletMapper mapper;
 
     @Override
-    public List<Wallet> findAll() {
-        return repository.findAll();
+    public ResponseDTO<BaseDTO> create(BaseDTO baseDTO) {
+
+        try{
+
+            Account account = accountRepository.findAccountByAccountUsername(((WalletDTO) baseDTO).getAccount().getUsername());
+
+            if(account == null){
+
+                return ResponseDTO.<BaseDTO>builder()
+                        .message("Account not exist !!!")
+                        .statusCode(ResponseCode.RESPONSE_ERROR_SERVER_ERROR)
+                        .createdTime(LocalDateTime.now())
+                        .build();
+
+            }else if (((WalletDTO) baseDTO).getWalletName().equals("")) {
+
+                return ResponseDTO.<BaseDTO>builder()
+                        .message("Please input name of wallet")
+                        .statusCode(ResponseCode.RESPONSE_ERROR_SERVER_ERROR)
+                        .createdTime(LocalDateTime.now())
+                        .build();
+
+            }else if (walletRepository.findByAccountAndWalletName(account, ((WalletDTO) baseDTO).getWalletName()) != null){
+
+                return ResponseDTO.<BaseDTO>builder()
+                        .message("Name of wallet exist !")
+                        .statusCode(ResponseCode.RESPONSE_ERROR_SERVER_ERROR)
+                        .createdTime(LocalDateTime.now())
+                        .build();
+
+            }
+
+            Wallet wallet = mapper.mapToEntity((WalletDTO) baseDTO, Wallet.class);
+            wallet.setAccount(account);
+            walletRepository.save(wallet);
+
+            return ResponseDTO.<BaseDTO>builder()
+                    .message("Insert wallet complete !!!")
+                    .statusCode(ResponseCode.RESPONSE_CREATED)
+                    .createdTime(LocalDateTime.now())
+                    .object(mapper.mapToDTO(wallet, WalletDTO.class))
+                    .build();
+
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResponseDTO.<BaseDTO>builder()
+                    .message("Insert wallet fail !!!")
+                    .statusCode(ResponseCode.RESPONSE_CREATED)
+                    .createdTime(LocalDateTime.now())
+                    .build();
+
+        }
+
     }
 
     @Override
-    public List<Wallet> findAll(Sort sort) {
-        return repository.findAll(sort);
+    public ResponseDTO<BaseDTO> update(BaseDTO baseDTO) {
+
+       try{
+
+           Account account = accountRepository.findAccountByAccountUsername(((WalletDTO) baseDTO).getAccount().getUsername());
+           Wallet wallet = walletRepository.findById(((WalletDTO) baseDTO).getWalletId()).get();
+
+           if(account == null || wallet == null){
+
+               return ResponseDTO.<BaseDTO>builder()
+                       .message("Account or wallet not exist !!!")
+                       .statusCode(ResponseCode.RESPONSE_ERROR_SERVER_ERROR)
+                       .createdTime(LocalDateTime.now())
+                       .build();
+
+           }else if (((WalletDTO) baseDTO).getWalletName().equals("") || ((WalletDTO) baseDTO).getWalletBalance() == null
+                || ((WalletDTO) baseDTO).getWalletName() == null) {
+
+               return ResponseDTO.<BaseDTO>builder()
+                       .message("Please input name of wallet or balance")
+                       .statusCode(ResponseCode.RESPONSE_ERROR_SERVER_ERROR)
+                       .createdTime(LocalDateTime.now())
+                       .build();
+
+           }
+
+           wallet = mapper.mapToEntity((WalletDTO) baseDTO, Wallet.class);
+           wallet.setAccount(account);
+
+           walletRepository.save(wallet);
+
+           return ResponseDTO.<BaseDTO>builder()
+                   .message("Update wallet complete !!!")
+                   .statusCode(ResponseCode.RESPONSE_OK_CODE)
+                   .createdTime(LocalDateTime.now())
+                   .object(mapper.mapToDTO(wallet, WalletDTO.class))
+                   .build();
+
+       }catch (Exception e){
+           e.printStackTrace();
+           return ResponseDTO.<BaseDTO>builder()
+                   .message("Update wallet fail !!!")
+                   .statusCode(ResponseCode.RESPONSE_ERROR_SERVER_ERROR)
+                   .createdTime(LocalDateTime.now())
+                   .build();
+       }
+
     }
 
     @Override
-    public List<Wallet> findAllById(Iterable<WalletKey> walletKeys) {
-        return repository.findAllById(walletKeys);
+    public ResponseDTO<BaseDTO> delete(BaseDTO baseDTO) {
+
+        try{
+
+            Wallet wallet = walletRepository.findById(((WalletDTO) baseDTO).getWalletId()).get();
+            walletRepository.delete(wallet);
+
+            return ResponseDTO.<BaseDTO>builder()
+                    .message("Delete wallet complete !!!")
+                    .statusCode(ResponseCode.RESPONSE_OK_CODE)
+                    .createdTime(LocalDateTime.now())
+                    .build();
+
+        }catch (Exception e){
+            e.printStackTrace();
+
+            return ResponseDTO.<BaseDTO>builder()
+                    .message("Delete wallet complete !!!")
+                    .statusCode(ResponseCode.RESPONSE_ERROR_SERVER_ERROR)
+                    .createdTime(LocalDateTime.now())
+                    .build();
+
+        }
+
     }
 
     @Override
-    public <S extends Wallet> List<S> saveAll(Iterable<S> entities) {
-        return repository.saveAll(entities);
+    public ResponseDTO<BaseDTO> getAll(BaseDTO baseDTO) {
+
+        try{
+
+            Account account = accountRepository.findAccountByAccountUsername(((AccountDTO) baseDTO).getUsername());
+            List<Wallet> wallets = walletRepository.findAllByAccount(account);
+
+            return ResponseDTO.<BaseDTO>builder()
+                    .message("Get wallets complete !!!")
+                    .statusCode(ResponseCode.RESPONSE_OK_CODE)
+                    .objectList(mapper.mapToDTOList(wallets, WalletDTO.class))
+                    .createdTime(LocalDateTime.now())
+                    .build();
+
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResponseDTO.<BaseDTO>builder()
+                    .message("Get wallets fail !!!")
+                    .statusCode(ResponseCode.RESPONSE_ERROR_SERVER_ERROR)
+                    .createdTime(LocalDateTime.now())
+                    .build();
+        }
+
     }
 
     @Override
-    public void flush() {
-        repository.flush();
-    }
+    public ResponseDTO<BaseDTO> getOne(BaseDTO baseDTO) {
 
-    @Override
-    public <S extends Wallet> S saveAndFlush(S entity) {
-        return repository.saveAndFlush(entity);
-    }
+        try{
 
-    @Override
-    public <S extends Wallet> List<S> saveAllAndFlush(Iterable<S> entities) {
-        return repository.saveAllAndFlush(entities);
-    }
+            Wallet wallet = walletRepository.findById(((WalletDTO) baseDTO).getWalletId()).get();
+            return ResponseDTO.<BaseDTO>builder()
+                    .message("Get wallet complete !!!")
+                    .statusCode(ResponseCode.RESPONSE_OK_CODE)
+                    .object(mapper.mapToDTO(wallet, WalletDTO.class))
+                    .createdTime(LocalDateTime.now())
+                    .build();
 
-    @Override
-    public void deleteAllInBatch(Iterable<Wallet> entities) {
-        repository.deleteAllInBatch(entities);
-    }
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResponseDTO.<BaseDTO>builder()
+                    .message("Get wallet fail !!!")
+                    .statusCode(ResponseCode.RESPONSE_ERROR_SERVER_ERROR)
+                    .createdTime(LocalDateTime.now())
+                    .build();
+        }
 
-    @Override
-    public void deleteAllByIdInBatch(Iterable<WalletKey> walletKeys) {
-        repository.deleteAllByIdInBatch(walletKeys);
-    }
-
-    @Override
-    public void deleteAllInBatch() {
-        repository.deleteAllInBatch();
-    }
-
-    @Override
-    public Wallet getReferenceById(WalletKey walletKey) {
-        return repository.getReferenceById(walletKey);
-    }
-
-    @Override
-    public <S extends Wallet> List<S> findAll(Example<S> example) {
-        return repository.findAll(example);
-    }
-
-    @Override
-    public <S extends Wallet> List<S> findAll(Example<S> example, Sort sort) {
-        return repository.findAll(example, sort);
-    }
-
-    @Override
-    public Page<Wallet> findAll(Pageable pageable) {
-        return repository.findAll(pageable);
-    }
-
-    @Override
-    public <S extends Wallet> S save(S entity) {
-        return repository.save(entity);
-    }
-
-    @Override
-    public Optional<Wallet> findById(WalletKey walletKey) {
-        return repository.findById(walletKey);
-    }
-
-    @Override
-    public boolean existsById(WalletKey walletKey) {
-        return repository.existsById(walletKey);
-    }
-
-    @Override
-    public long count() {
-        return repository.count();
-    }
-
-    @Override
-    public void deleteById(WalletKey walletKey) {
-        repository.deleteById(walletKey);
-    }
-
-    @Override
-    public void delete(Wallet entity) {
-        repository.delete(entity);
-    }
-
-    @Override
-    public void deleteAllById(Iterable<? extends WalletKey> walletKeys) {
-        repository.deleteAllById(walletKeys);
-    }
-
-    @Override
-    public void deleteAll(Iterable<? extends Wallet> entities) {
-        repository.deleteAll(entities);
-    }
-
-    @Override
-    public void deleteAll() {
-        repository.deleteAll();
-    }
-
-    @Override
-    public <S extends Wallet> Optional<S> findOne(Example<S> example) {
-        return repository.findOne(example);
-    }
-
-    @Override
-    public <S extends Wallet> Page<S> findAll(Example<S> example, Pageable pageable) {
-        return repository.findAll(example, pageable);
-    }
-
-    @Override
-    public <S extends Wallet> long count(Example<S> example) {
-        return repository.count(example);
-    }
-
-    @Override
-    public <S extends Wallet> boolean exists(Example<S> example) {
-        return repository.exists(example);
-    }
-
-    @Override
-    public <S extends Wallet, R> R findBy(Example<S> example, Function<FluentQuery.FetchableFluentQuery<S>, R> queryFunction) {
-        return repository.findBy(example, queryFunction);
     }
 }

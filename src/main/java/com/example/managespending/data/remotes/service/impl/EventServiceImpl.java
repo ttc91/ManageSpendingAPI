@@ -21,10 +21,10 @@ public class EventServiceImpl implements EventService {
     @Autowired
     private EventRepository repository;
 
-    @Override
-    public Event findEventByEventName(String eventName) {
-        return repository.findEventByEventName(eventName);
-    }
+//    @Override
+//    public Event findEventByEventName(String eventName) {
+//        return repository.findEventByEventName(eventName);
+//    }
 
     @Override
     public List<Event> findAll() {

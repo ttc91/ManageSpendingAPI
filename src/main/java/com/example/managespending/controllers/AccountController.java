@@ -1,69 +1,56 @@
 package com.example.managespending.controllers;
 
-import com.example.managespending.data.models.dto.req.account.AccountDeleteDto;
-import com.example.managespending.data.models.dto.req.account.AccountRegistrationDto;
-import com.example.managespending.data.models.dto.req.account.AccountUpdateDto;
-import com.example.managespending.data.models.entities.Account;
+import com.example.managespending.data.models.dto.AccountDTO;
+import com.example.managespending.data.models.dto.base.BaseDTO;
+import com.example.managespending.data.models.dto.base.ResponseDTO;
 import com.example.managespending.data.remotes.service.AccountService;
 import com.example.managespending.utils.PathApi;
-import org.mindrot.jbcrypt.BCrypt;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 
-@Controller
-@RequestMapping(PathApi.ACCOUNT_DOMAIN)
+
+@RestController
+@RequestMapping(value = PathApi.ACCOUNT_DOMAIN)
 public class AccountController {
 
     @Autowired
-    private AccountService service;
+    AccountService service;
 
-    @Autowired
-    private ModelMapper modelMapper;
+    @PostMapping(value = PathApi.MODEL_CREATE_DOMAIN)
+    public ResponseEntity<ResponseDTO<BaseDTO>> create (@RequestBody @Valid AccountDTO request) {
 
-    @PostMapping(PathApi.MODEL_INSERT_DOMAIN)
-    public ResponseEntity<Account> insert(@RequestBody AccountRegistrationDto request) {
-
-        if (request.getPassword().equals(request.getRePassword())) {
-            Account account = modelMapper.map(request, Account.class);
-            account.setPassword(BCrypt.hashpw(account.getPassword(), BCrypt.gensalt(12)));
-            service.save(account);
-            return new ResponseEntity<>(account, HttpStatus.CREATED);
-
-        } else {
+        try{
+            return new ResponseEntity<>(service.create(request), HttpStatus.CREATED);
+        }catch (Exception e){
+            e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
     }
 
-    @PutMapping(PathApi.MODEL_UPDATE_DOMAIN)
-    public ResponseEntity<Account> update(@RequestBody AccountUpdateDto request) {
+    @PostMapping(value = PathApi.ACCOUNT_SIGN_IN_DOMAIN)
+    public ResponseEntity<ResponseDTO<BaseDTO>> signIn (@RequestBody @Valid AccountDTO request) {
 
-        Account account = service.findAccountByUsername(request.getUsername());
-        if (account != null && BCrypt.checkpw(request.getOldPassword(), account.getPassword()) &&
-                request.getNewPassword().equals(request.getReNewPassword()) && (request.getOldPassword() != request.getNewPassword())) {
-
-            account.setPassword(BCrypt.hashpw(request.getNewPassword(), BCrypt.gensalt(12)));
-            service.save(account);
-            return new ResponseEntity<>(account, HttpStatus.UPGRADE_REQUIRED);
-
-        } else {
+        try{
+            return new ResponseEntity<>(service.signIn(request), HttpStatus.OK);
+        }catch (Exception e){
+            e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+
     }
 
-    @DeleteMapping(PathApi.MODEL_DELETE_DOMAIN)
-    public ResponseEntity<Account> delete(@RequestBody AccountDeleteDto request) {
+    @PostMapping(value = PathApi.ACCOUNT_CHANGE_PASSWORD)
+    public ResponseEntity<ResponseDTO<BaseDTO>> changePassword (@RequestBody @Valid AccountDTO request) {
 
-        Account account = service.findAccountByUsername(request.getUsername());
-        if (request != null) {
-            service.delete(account);
-            return new ResponseEntity<>(account, HttpStatus.UPGRADE_REQUIRED);
-        } else {
+        try{
+            return new ResponseEntity<>(service.changePassword(request), HttpStatus.OK);
+        }catch (Exception e){
+            e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 

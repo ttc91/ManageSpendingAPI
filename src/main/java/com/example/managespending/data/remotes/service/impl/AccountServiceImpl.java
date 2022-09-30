@@ -1,168 +1,180 @@
 package com.example.managespending.data.remotes.service.impl;
 
+import com.example.managespending.data.mapper.AccountMapper;
+import com.example.managespending.data.models.dto.AccountDTO;
+import com.example.managespending.data.models.dto.base.BaseDTO;
+import com.example.managespending.data.models.dto.base.ResponseDTO;
+import com.example.managespending.data.models.dto.other.ResponseCode;
 import com.example.managespending.data.models.entities.Account;
 import com.example.managespending.data.remotes.repositories.AccountRepository;
 import com.example.managespending.data.remotes.service.AccountService;
+import com.example.managespending.data.remotes.service.base.BaseService;
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.repository.query.FluentQuery;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.function.Function;
+import java.time.LocalDateTime;
+
 
 @Service
-public class AccountServiceImpl implements AccountService {
+public class AccountServiceImpl extends BaseService<BaseDTO> implements AccountService {
 
     @Autowired
-    private AccountRepository repository;
+    AccountRepository repository;
+
+    @Autowired
+    AccountMapper mapper;
 
     @Override
-    public Account findAccountByUsername(String username) {
-        return repository.findAccountByUsername(username);
+    public ResponseDTO<BaseDTO> create(BaseDTO baseDTO) {
+
+        try {
+
+            if(((AccountDTO) baseDTO).getRePassword() == null || ((AccountDTO) baseDTO).getRePassword().equals("")){
+                return ResponseDTO.<BaseDTO>builder()
+                        .message("Please input correct password !")
+                        .createdTime(LocalDateTime.now())
+                        .statusCode(ResponseCode.RESPONSE_BAD_REQUEST)
+                        .build();
+            }
+
+            if(!((AccountDTO) baseDTO).getPassword().equals(((AccountDTO) baseDTO).getRePassword())){
+                return ResponseDTO.<BaseDTO>builder()
+                        .message("Password is not same !")
+                        .createdTime(LocalDateTime.now())
+                        .statusCode(ResponseCode.RESPONSE_BAD_REQUEST)
+                        .build();
+            }
+
+            ((AccountDTO) baseDTO).setPassword(BCrypt.hashpw(((AccountDTO) baseDTO).getPassword(), BCrypt.gensalt(12)));
+            Account account = repository.save(mapper.mapToEntity(((AccountDTO) baseDTO), Account.class));
+
+            return ResponseDTO.<BaseDTO>builder()
+                    .message("Create account complete !")
+                    .object(mapper.mapToDTO(account, AccountDTO.class))
+                    .createdTime(LocalDateTime.now())
+                    .statusCode(ResponseCode.RESPONSE_CREATED)
+                    .build();
+
+        }catch (Exception e){
+            e.printStackTrace();
+
+            return ResponseDTO.<BaseDTO>builder()
+                    .message("Create account fail !")
+                    .createdTime(LocalDateTime.now())
+                    .statusCode(ResponseCode.RESPONSE_BAD_REQUEST)
+                    .build();
+
+        }
+
     }
 
     @Override
-    public List<Account> findAll() {
-        return repository.findAll();
+    public ResponseDTO<BaseDTO> signIn(BaseDTO baseDTO) {
+
+        try{
+
+            Account account = repository.findAccountByAccountUsername(((AccountDTO) baseDTO).getUsername());
+
+            if(((AccountDTO) baseDTO).getPassword().equals("") || ((AccountDTO) baseDTO).getUsername().equals("")){
+
+                return ResponseDTO.<BaseDTO>builder()
+                        .message("Please input username or password !!!")
+                        .statusCode(ResponseCode.RESPONSE_ERROR_SERVER_ERROR)
+                        .createdTime(LocalDateTime.now())
+                        .build();
+
+            }
+
+            if(BCrypt.checkpw(((AccountDTO) baseDTO).getPassword(), account.getAccountPassword())){
+                return ResponseDTO.<BaseDTO>builder()
+                        .message("Sign in complete !!!")
+                        .statusCode(ResponseCode.RESPONSE_OK_CODE)
+                        .createdTime(LocalDateTime.now())
+                        .object(mapper.mapToDTO(account, AccountDTO.class))
+                        .build();
+            }
+
+            return ResponseDTO.<BaseDTO>builder()
+                    .message("Sign in fail !!!")
+                    .statusCode(ResponseCode.RESPONSE_ERROR_SERVER_ERROR)
+                    .createdTime(LocalDateTime.now())
+                    .build();
+
+        }catch (Exception e) {
+            e.printStackTrace();
+            return ResponseDTO.<BaseDTO>builder()
+                    .message("Sign in fail !!!")
+                    .statusCode(ResponseCode.RESPONSE_ERROR_SERVER_ERROR)
+                    .createdTime(LocalDateTime.now())
+                    .build();
+        }
     }
 
     @Override
-    public List<Account> findAll(Sort sort) {
-        return repository.findAll(sort);
+    public ResponseDTO<BaseDTO> changePassword(BaseDTO baseDTO) {
+
+        try{
+
+            Account account = repository.findAccountByAccountUsername(((AccountDTO) baseDTO).getUsername());
+
+            if(((AccountDTO) baseDTO).getNewPassword().equals("") || ((AccountDTO) baseDTO).getNewPassword() == null ||
+                ((AccountDTO) baseDTO).getPassword().equals("") || ((AccountDTO) baseDTO).getPassword() == null ||
+                    ((AccountDTO) baseDTO).getRePassword().equals("") || ((AccountDTO) baseDTO).getRePassword() == null){
+
+                return ResponseDTO.<BaseDTO>builder()
+                        .message("Please input fill field before update password !!!")
+                        .statusCode(ResponseCode.RESPONSE_ERROR_SERVER_ERROR)
+                        .createdTime(LocalDateTime.now())
+                        .build();
+
+            }else if (! BCrypt.checkpw(((AccountDTO) baseDTO).getPassword(), account.getAccountPassword())){
+
+                return ResponseDTO.<BaseDTO>builder()
+                        .message("Present password is not correct !!!")
+                        .statusCode(ResponseCode.RESPONSE_ERROR_SERVER_ERROR)
+                        .createdTime(LocalDateTime.now())
+                        .build();
+
+            }else if ( BCrypt.checkpw(((AccountDTO) baseDTO).getNewPassword(), account.getAccountPassword()) ){
+
+                return ResponseDTO.<BaseDTO>builder()
+                        .message("Your new password and present password is same please input again !!!")
+                        .statusCode(ResponseCode.RESPONSE_ERROR_SERVER_ERROR)
+                        .createdTime(LocalDateTime.now())
+                        .build();
+
+            }else if ( !((AccountDTO) baseDTO).getNewPassword().equals(((AccountDTO) baseDTO).getRePassword())){
+
+                return ResponseDTO.<BaseDTO>builder()
+                        .message("Please input same value of two field in new password !!!")
+                        .statusCode(ResponseCode.RESPONSE_ERROR_SERVER_ERROR)
+                        .createdTime(LocalDateTime.now())
+                        .build();
+
+            }
+
+            account.setAccountPassword(BCrypt.hashpw(((AccountDTO) baseDTO).getNewPassword(), BCrypt.gensalt(12)));
+            repository.save(account);
+
+            return ResponseDTO.<BaseDTO>builder()
+                    .message("Change password complete !!!")
+                    .statusCode(ResponseCode.RESPONSE_OK_CODE)
+                    .createdTime(LocalDateTime.now())
+                    .object(mapper.mapToDTO(account, AccountDTO.class))
+                    .build();
+
+        }catch (Exception e){
+
+            e.printStackTrace();
+            return ResponseDTO.<BaseDTO>builder()
+                    .message("Change password fail !!!")
+                    .statusCode(ResponseCode.RESPONSE_ERROR_SERVER_ERROR)
+                    .createdTime(LocalDateTime.now())
+                    .build();
+
+        }
+
     }
 
-    @Override
-    public List<Account> findAllById(Iterable<Long> longs) {
-        return repository.findAllById(longs);
-    }
-
-    @Override
-    public <S extends Account> List<S> saveAll(Iterable<S> entities) {
-        return repository.saveAll(entities);
-    }
-
-    @Override
-    public void flush() {
-        repository.flush();
-    }
-
-    @Override
-    public <S extends Account> S saveAndFlush(S entity) {
-        return repository.saveAndFlush(entity);
-    }
-
-    @Override
-    public <S extends Account> List<S> saveAllAndFlush(Iterable<S> entities) {
-        return repository.saveAllAndFlush(entities);
-    }
-
-    @Override
-    public void deleteAllInBatch(Iterable<Account> entities) {
-        repository.deleteAllInBatch(entities);
-    }
-
-    @Override
-    public void deleteAllByIdInBatch(Iterable<Long> longs) {
-        repository.deleteAllByIdInBatch(longs);
-    }
-
-    @Override
-    public void deleteAllInBatch() {
-        repository.deleteAllInBatch();
-    }
-
-    @Override
-    public Account getReferenceById(Long aLong) {
-        return repository.getReferenceById(aLong);
-    }
-
-    @Override
-    public <S extends Account> List<S> findAll(Example<S> example) {
-        return repository.findAll(example);
-    }
-
-    @Override
-    public <S extends Account> List<S> findAll(Example<S> example, Sort sort) {
-        return repository.findAll(example, sort);
-    }
-
-    @Override
-    public Page<Account> findAll(Pageable pageable) {
-        return repository.findAll(pageable);
-    }
-
-    @Override
-    public <S extends Account> S save(S entity) {
-        return repository.save(entity);
-    }
-
-    @Override
-    public Optional<Account> findById(Long aLong) {
-        return repository.findById(aLong);
-    }
-
-    @Override
-    public boolean existsById(Long aLong) {
-        return repository.existsById(aLong);
-    }
-
-    @Override
-    public long count() {
-        return repository.count();
-    }
-
-    @Override
-    public void deleteById(Long aLong) {
-        repository.deleteById(aLong);
-    }
-
-    @Override
-    public void delete(Account entity) {
-        repository.delete(entity);
-    }
-
-    @Override
-    public void deleteAllById(Iterable<? extends Long> longs) {
-        repository.deleteAllById(longs);
-    }
-
-    @Override
-    public void deleteAll(Iterable<? extends Account> entities) {
-        repository.deleteAll(entities);
-    }
-
-    @Override
-    public void deleteAll() {
-        repository.deleteAll();
-    }
-
-    @Override
-    public <S extends Account> Optional<S> findOne(Example<S> example) {
-        return repository.findOne(example);
-    }
-
-    @Override
-    public <S extends Account> Page<S> findAll(Example<S> example, Pageable pageable) {
-        return repository.findAll(example, pageable);
-    }
-
-    @Override
-    public <S extends Account> long count(Example<S> example) {
-        return repository.count(example);
-    }
-
-    @Override
-    public <S extends Account> boolean exists(Example<S> example) {
-        return repository.exists(example);
-    }
-
-    @Override
-    public <S extends Account, R> R findBy(Example<S> example, Function<FluentQuery.FetchableFluentQuery<S>, R> queryFunction) {
-        return repository.findBy(example, queryFunction);
-    }
 }

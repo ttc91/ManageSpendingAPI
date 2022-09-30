@@ -1,13 +1,16 @@
 package com.example.managespending.data.remotes.repositories;
 
+import com.example.managespending.data.models.entities.Account;
 import com.example.managespending.data.models.entities.Wallet;
-import com.example.managespending.data.models.entities.key.WalletKey;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-@Repository
-public interface WalletRepository extends JpaRepository<Wallet, WalletKey> {
+import java.util.List;
 
-    public void deleteById(WalletKey key);
+@Repository
+public interface WalletRepository extends JpaRepository<Wallet, Long> {
+
+    Wallet findByAccountAndWalletName(Account account, String walletName);
+    List<Wallet> findAllByAccount(Account account);
 
 }

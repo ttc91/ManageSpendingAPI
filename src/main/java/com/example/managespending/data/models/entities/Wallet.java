@@ -10,6 +10,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -41,16 +42,10 @@ public class Wallet implements Serializable {
     @JoinColumn(name = "account_id", nullable = false)
     private Account account;
 
+    @OneToMany(cascade = {CascadeType.REMOVE}, mappedBy = "wallet")
+    private Set<Event> events;
 
-//    @ManyToOne
-//    @JoinColumn(name = "wallet_category_id", nullable = false)
-//    @NotNull(message = "Please choose your wallet category !!!")
-//    private WalletCategory walletCategory;
-//
-//    @OneToMany(mappedBy = "wallet", cascade = CascadeType.ALL)
-//    private Set<Transaction> transactions;
-//
-//    @OneToMany(mappedBy = "wallet", cascade = CascadeType.ALL)
-//    private Set<Budget> budgets;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "wallet")
+    private Set<History> histories;
 
 }

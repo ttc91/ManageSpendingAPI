@@ -14,6 +14,7 @@ public class ManagespendingApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(ManagespendingApplication.class, args);
+
     }
 
     @Bean

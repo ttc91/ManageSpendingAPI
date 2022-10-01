@@ -26,11 +26,9 @@ public class Account implements Serializable {
     private Long accountId;
 
     @Column(length = 30, nullable = false, unique = true)
-    @NotNull(message = "Please input correct value of username !!!")
     private String accountUsername;
 
     @Column(nullable = false)
-    @NotNull(message = "Please input correct value of password !!!")
     private String accountPassword;
 
     @Column(nullable = false)
@@ -43,5 +41,20 @@ public class Account implements Serializable {
 
     @OneToMany(cascade = {CascadeType.REMOVE}, mappedBy = "account")
     private Set<Wallet> wallets;
+
+    @OneToMany(cascade = {CascadeType.REMOVE}, mappedBy = "account")
+    private Set<Expense> expenses;
+
+    @OneToMany(cascade = {CascadeType.REMOVE}, mappedBy = "account")
+    private Set<Budget> budgets;
+
+    @OneToMany(cascade = {CascadeType.REMOVE}, mappedBy = "account")
+    private Set<Goal> goals;
+
+    @OneToMany(cascade = {CascadeType.REMOVE}, mappedBy = "account")
+    private Set<Event> events;
+
+    @OneToMany(cascade = {CascadeType.REMOVE}, mappedBy = "account")
+    private Set<History> histories;
 
 }

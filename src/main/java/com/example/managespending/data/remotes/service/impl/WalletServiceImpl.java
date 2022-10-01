@@ -5,7 +5,7 @@ import com.example.managespending.data.models.dto.AccountDTO;
 import com.example.managespending.data.models.dto.WalletDTO;
 import com.example.managespending.data.models.dto.base.BaseDTO;
 import com.example.managespending.data.models.dto.base.ResponseDTO;
-import com.example.managespending.data.models.dto.other.ResponseCode;
+import com.example.managespending.utils.ResponseCode;
 import com.example.managespending.data.models.entities.Account;
 import com.example.managespending.data.models.entities.Wallet;
 import com.example.managespending.data.remotes.repositories.AccountRepository;

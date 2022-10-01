@@ -1,49 +1,45 @@
 package com.example.managespending.data.models.entities;
 
+import com.example.managespending.utils.enums.ExpenseType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Date;
 import java.util.Set;
+
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 
 @Entity
-@Table(name = "event")
-public class Event implements Serializable {
+@Table(name = "expense")
+public class Expense implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column
-    private Long eventId;
+    private Long expenseId;
 
-    @Column(length = 100, unique = true, nullable = false)
-    private String eventName;
-
-    @Column(nullable = false)
-    @Temporal(TemporalType.DATE)
-    private Date eventStartDate;
-
-    @Column(columnDefinition="BOOLEAN DEFAULT FALSE NOT NULL")
-    private int eventStatus;
+    @Column(length = 30, nullable = false, unique = true)
+    private String expenseName;
 
     @Column(nullable = false)
-    private String eventIcon;
+    private ExpenseType expenseType;
+
+    @Column(nullable = false)
+    private String expenseIcon;
 
     @ManyToOne
     @JoinColumn(name = "account_id", nullable = false)
     private Account account;
 
-    @ManyToOne
-    @JoinColumn(name = "wallet_id", nullable = false)
-    private Wallet wallet;
+    @OneToMany(cascade = {CascadeType.REMOVE}, mappedBy = "expense")
+    private Set<Budget> budgets;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "event")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "expense")
     private Set<History> histories;
 
 }

@@ -8,7 +8,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.Set;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -54,6 +54,6 @@ public class Goal implements Serializable {
     private Account account;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "goal")
-    private Set<History> histories;
+    private List<History> histories;
 
 }

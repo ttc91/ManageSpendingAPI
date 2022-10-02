@@ -3,18 +3,19 @@ package com.example.managespending.data.models.entities;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
-import java.util.Set;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@ToString
 
 @Entity
 @Table(name = "account")
@@ -40,21 +41,21 @@ public class Account implements Serializable {
     private Date updatedDate;
 
     @OneToMany(cascade = {CascadeType.REMOVE}, mappedBy = "account")
-    private Set<Wallet> wallets;
+    private List<Wallet> wallets;
 
     @OneToMany(cascade = {CascadeType.REMOVE}, mappedBy = "account")
-    private Set<Expense> expenses;
+    private List<Expense> expenses;
 
     @OneToMany(cascade = {CascadeType.REMOVE}, mappedBy = "account")
-    private Set<Budget> budgets;
+    private List<Budget> budgets;
 
     @OneToMany(cascade = {CascadeType.REMOVE}, mappedBy = "account")
-    private Set<Goal> goals;
+    private List<Goal> goals;
 
     @OneToMany(cascade = {CascadeType.REMOVE}, mappedBy = "account")
-    private Set<Event> events;
+    private List<Event> events;
 
     @OneToMany(cascade = {CascadeType.REMOVE}, mappedBy = "account")
-    private Set<History> histories;
+    private List<History> histories;
 
 }

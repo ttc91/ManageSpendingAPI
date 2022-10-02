@@ -4,15 +4,17 @@ import com.example.managespending.utils.enums.ExpenseType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Set;
+import java.util.List;
 
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@ToString
 
 @Entity
 @Table(name = "expense")
@@ -27,6 +29,7 @@ public class Expense implements Serializable {
     private String expenseName;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private ExpenseType expenseType;
 
     @Column(nullable = false)
@@ -37,9 +40,9 @@ public class Expense implements Serializable {
     private Account account;
 
     @OneToMany(cascade = {CascadeType.REMOVE}, mappedBy = "expense")
-    private Set<Budget> budgets;
+    private List<Budget> budgets;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "expense")
-    private Set<History> histories;
+    private List<History> histories;
 
 }

@@ -2,9 +2,11 @@ package com.example.managespending.data.models.entities;
 
 import com.example.managespending.utils.enums.HistoryAction;
 import com.example.managespending.utils.enums.HistoryType;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
@@ -15,6 +17,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@ToString
 
 @Entity
 @Table(name = "history")
@@ -26,6 +29,7 @@ public class History implements Serializable {
     private Long historyId;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private HistoryType historyType;
 
     @Column
@@ -33,9 +37,10 @@ public class History implements Serializable {
     private Date historyNotedDate;
 
     @Column
+    @Enumerated(EnumType.STRING)
     private HistoryAction historyAction;
 
-    @Column(columnDefinition = "DOUBLE PRECISION DEFAULT 0.0 NOT NULL")
+    @Column
     private BigDecimal historyCost;
 
     @Column
@@ -59,6 +64,7 @@ public class History implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "expense_id")
+    @JsonBackReference
     private Expense expense;
 
 }

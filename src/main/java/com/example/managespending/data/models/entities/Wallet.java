@@ -10,7 +10,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.Set;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -43,9 +43,9 @@ public class Wallet implements Serializable {
     private Account account;
 
     @OneToMany(cascade = {CascadeType.REMOVE}, mappedBy = "wallet")
-    private Set<Event> events;
+    private List<Event> events;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "wallet")
-    private Set<History> histories;
+    private List<History> histories;
 
 }

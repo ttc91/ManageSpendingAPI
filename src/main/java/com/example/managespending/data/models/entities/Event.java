@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
-import java.util.Set;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -44,6 +44,6 @@ public class Event implements Serializable {
     private Wallet wallet;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "event")
-    private Set<History> histories;
+    private List<History> histories;
 
 }

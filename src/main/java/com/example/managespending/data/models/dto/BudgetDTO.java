@@ -1,8 +1,6 @@
 package com.example.managespending.data.models.dto;
 
-
 import com.example.managespending.data.models.dto.base.BaseDTO;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -10,26 +8,23 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Date;
 
 @EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class WalletDTO extends BaseDTO implements Serializable {
+public class BudgetDTO extends BaseDTO implements Serializable {
 
-    private Long walletId;
+    private Long budgetId;
 
-    private String walletName;
+    private String budgetName;
 
-    private BigDecimal walletBalance;
+    private BigDecimal budgetValue;
 
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    private Date createdDate;
-
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    private Date updatedDate;
+    private String budgetMothYear;
 
     private AccountDTO account;
+
+    private ExpenseDTO expense;
 
 }

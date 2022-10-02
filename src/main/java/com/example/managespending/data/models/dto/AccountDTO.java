@@ -3,30 +3,27 @@ package com.example.managespending.data.models.dto;
 import com.example.managespending.data.models.dto.base.BaseDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.util.Date;
 
+@EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 public class AccountDTO extends BaseDTO implements Serializable {
 
-    private Long id;
+    private Long accountId;
 
     @NotNull(message = "Please input your username !")
-    private String username;
+    private String accountUsername;
 
-    private String password;
+    private String accountPassword;
 
     private String newPassword;
 
     private String rePassword;
-
-    private Date createdTime;
-
-    private Date updatedTime;
 
 }

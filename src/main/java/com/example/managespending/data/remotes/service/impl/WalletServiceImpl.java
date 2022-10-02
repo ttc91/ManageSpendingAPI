@@ -36,7 +36,7 @@ public class WalletServiceImpl extends BaseService<BaseDTO> implements WalletSer
 
         try{
 
-            Account account = accountRepository.findAccountByAccountUsername(((WalletDTO) baseDTO).getAccount().getUsername());
+            Account account = accountRepository.findAccountByAccountUsername(((WalletDTO) baseDTO).getAccount().getAccountUsername());
 
             if(account == null){
 
@@ -92,7 +92,7 @@ public class WalletServiceImpl extends BaseService<BaseDTO> implements WalletSer
 
        try{
 
-           Account account = accountRepository.findAccountByAccountUsername(((WalletDTO) baseDTO).getAccount().getUsername());
+           Account account = accountRepository.findAccountByAccountUsername(((WalletDTO) baseDTO).getAccount().getAccountUsername());
            Wallet wallet = walletRepository.findById(((WalletDTO) baseDTO).getWalletId()).get();
 
            if(account == null || wallet == null){
@@ -169,7 +169,7 @@ public class WalletServiceImpl extends BaseService<BaseDTO> implements WalletSer
 
         try{
 
-            Account account = accountRepository.findAccountByAccountUsername(((AccountDTO) baseDTO).getUsername());
+            Account account = accountRepository.findAccountByAccountUsername(((AccountDTO) baseDTO).getAccountUsername());
             List<Wallet> wallets = walletRepository.findAllByAccount(account);
 
             return ResponseDTO.<BaseDTO>builder()

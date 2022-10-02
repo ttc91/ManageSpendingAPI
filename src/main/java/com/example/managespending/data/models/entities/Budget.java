@@ -21,7 +21,7 @@ public class Budget implements Serializable {
     @Column
     private Long budgetId;
 
-    @Column(nullable = false)
+    @Column(length = 100, nullable = false)
     private String budgetName;
 
     @Column(nullable = false)

@@ -38,7 +38,7 @@ public class AccountServiceImpl extends BaseService<BaseDTO> implements AccountS
                         .build();
             }
 
-            if(!((AccountDTO) baseDTO).getPassword().equals(((AccountDTO) baseDTO).getRePassword())){
+            if(!((AccountDTO) baseDTO).getAccountPassword().equals(((AccountDTO) baseDTO).getRePassword())){
                 return ResponseDTO.<BaseDTO>builder()
                         .message("Password is not same !")
                         .createdTime(LocalDateTime.now())
@@ -46,7 +46,7 @@ public class AccountServiceImpl extends BaseService<BaseDTO> implements AccountS
                         .build();
             }
 
-            ((AccountDTO) baseDTO).setPassword(BCrypt.hashpw(((AccountDTO) baseDTO).getPassword(), BCrypt.gensalt(12)));
+            ((AccountDTO) baseDTO).setAccountPassword(BCrypt.hashpw(((AccountDTO) baseDTO).getAccountPassword(), BCrypt.gensalt(12)));
             Account account = repository.save(mapper.mapToEntity(((AccountDTO) baseDTO), Account.class));
 
             return ResponseDTO.<BaseDTO>builder()
@@ -74,9 +74,9 @@ public class AccountServiceImpl extends BaseService<BaseDTO> implements AccountS
 
         try{
 
-            Account account = repository.findAccountByAccountUsername(((AccountDTO) baseDTO).getUsername());
+            Account account = repository.findAccountByAccountUsername(((AccountDTO) baseDTO).getAccountPassword());
 
-            if(((AccountDTO) baseDTO).getPassword().equals("") || ((AccountDTO) baseDTO).getUsername().equals("")){
+            if(((AccountDTO) baseDTO).getAccountPassword().equals("") || ((AccountDTO) baseDTO).getAccountUsername().equals("")){
 
                 return ResponseDTO.<BaseDTO>builder()
                         .message("Please input username or password !!!")
@@ -86,7 +86,7 @@ public class AccountServiceImpl extends BaseService<BaseDTO> implements AccountS
 
             }
 
-            if(BCrypt.checkpw(((AccountDTO) baseDTO).getPassword(), account.getAccountPassword())){
+            if(BCrypt.checkpw(((AccountDTO) baseDTO).getAccountPassword(), account.getAccountPassword())){
                 return ResponseDTO.<BaseDTO>builder()
                         .message("Sign in complete !!!")
                         .statusCode(ResponseCode.RESPONSE_OK_CODE)
@@ -116,10 +116,10 @@ public class AccountServiceImpl extends BaseService<BaseDTO> implements AccountS
 
         try{
 
-            Account account = repository.findAccountByAccountUsername(((AccountDTO) baseDTO).getUsername());
+            Account account = repository.findAccountByAccountUsername(((AccountDTO) baseDTO).getAccountUsername());
 
             if(((AccountDTO) baseDTO).getNewPassword().equals("") || ((AccountDTO) baseDTO).getNewPassword() == null ||
-                ((AccountDTO) baseDTO).getPassword().equals("") || ((AccountDTO) baseDTO).getPassword() == null ||
+                ((AccountDTO) baseDTO).getAccountPassword().equals("") || ((AccountDTO) baseDTO).getAccountPassword() == null ||
                     ((AccountDTO) baseDTO).getRePassword().equals("") || ((AccountDTO) baseDTO).getRePassword() == null){
 
                 return ResponseDTO.<BaseDTO>builder()
@@ -128,7 +128,7 @@ public class AccountServiceImpl extends BaseService<BaseDTO> implements AccountS
                         .createdTime(LocalDateTime.now())
                         .build();
 
-            }else if (! BCrypt.checkpw(((AccountDTO) baseDTO).getPassword(), account.getAccountPassword())){
+            }else if (! BCrypt.checkpw(((AccountDTO) baseDTO).getAccountPassword(), account.getAccountPassword())){
 
                 return ResponseDTO.<BaseDTO>builder()
                         .message("Present password is not correct !!!")

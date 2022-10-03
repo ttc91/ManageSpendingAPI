@@ -19,7 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -57,15 +56,11 @@ public class ExpenseServiceImpl extends BaseService<BaseDTO> implements ExpenseS
 
             Expense expense = mapper.mapToEntity((ExpenseDTO) baseDTO, Expense.class);
 
-            List<History> histories = new ArrayList<>();
-
             History history = new History();
             history.setAccount(accountRepository.findAccountByAccountUsername(((ExpenseDTO) baseDTO).getAccount().getAccountUsername()));
             history.setHistoryType(HistoryType.CREATE);
             history.setHistoryNote("Created new expense name " + expense.getExpenseName());
-            histories.add(history);
 
-            expense.setHistories(histories);
             expense.setAccount(accountRepository.findAccountByAccountUsername(((ExpenseDTO) baseDTO).getAccount().getAccountUsername()));
 
             expenseRepository.save(expense);
@@ -123,15 +118,11 @@ public class ExpenseServiceImpl extends BaseService<BaseDTO> implements ExpenseS
 
             Expense expense = opt.get();
 
-            List<History> histories = new ArrayList<>();
-
             History history = new History();
             history.setAccount(accountRepository.findAccountByAccountUsername(((ExpenseDTO) baseDTO).getAccount().getAccountUsername()));
             history.setHistoryType(HistoryType.UPDATE);
             history.setHistoryNote("Updated expense name " + expense.getExpenseName());
-            histories.add(history);
 
-            expense.setHistories(histories);
             expense.setExpenseType(((ExpenseDTO) baseDTO).getExpenseType());
             expense.setExpenseName(((ExpenseDTO) baseDTO).getExpenseName());
             expense.setExpenseIcon(((ExpenseDTO) baseDTO).getExpenseIcon());

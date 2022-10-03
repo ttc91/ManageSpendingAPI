@@ -56,6 +56,7 @@ public class History implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "goal_id")
+    @JsonBackReference
     private Goal goal;
 
     @ManyToOne

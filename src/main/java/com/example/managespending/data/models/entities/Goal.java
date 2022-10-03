@@ -3,6 +3,7 @@ package com.example.managespending.data.models.entities;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -36,7 +37,7 @@ public class Goal implements Serializable {
     private BigDecimal goalFinalCost;
 
     @Column(nullable = false)
-    @Temporal(TemporalType.DATE)
+    @CreationTimestamp
     private Date goalStartDate;
 
     @Column(nullable = false)

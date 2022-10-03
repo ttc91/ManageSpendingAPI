@@ -38,4 +38,7 @@ public class HistoryDTO extends BaseDTO implements Serializable {
     @JsonIgnore
     private ExpenseDTO expense;
 
+    @JsonIgnore
+    private GoalDTO goal;
+
 }

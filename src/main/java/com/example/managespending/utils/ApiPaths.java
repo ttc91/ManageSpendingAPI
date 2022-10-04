@@ -6,6 +6,7 @@ public interface ApiPaths {
     String WALLET_DOMAIN = "/wallet";
     String EXPENSE_DOMAIN = "/expense";
     String GOAL_DOMAIN = "/goal";
+    String BUDGET_DOMAIN = "/budget";
 
     String MODEL_CREATE_DOMAIN = "/create";
     String MODEL_UPDATE_DOMAIN = "/update";

@@ -2,6 +2,7 @@ package com.example.managespending.data.models.dto;
 
 import com.example.managespending.data.models.dto.base.BaseDTO;
 import com.example.managespending.utils.enums.ExpenseType;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -24,9 +25,8 @@ public class ExpenseDTO extends BaseDTO implements Serializable {
 
     private String expenseIcon;
 
+    @JsonBackReference
     private AccountDTO account;
-
-    private List<BudgetDTO> budgets;
 
     private List<HistoryDTO> histories;
 

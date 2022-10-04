@@ -1,7 +1,9 @@
 package com.example.managespending.data.models.dto;
 
 import com.example.managespending.data.models.dto.base.BaseDTO;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -40,6 +42,7 @@ public class GoalDTO extends BaseDTO implements Serializable {
 
     private String goalColor;
 
+    @JsonBackReference
     private AccountDTO account;
 
     private Long walletId;

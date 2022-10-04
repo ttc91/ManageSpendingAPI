@@ -48,10 +48,12 @@ public class History implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "account_id", nullable = false)
+    @JsonBackReference
     private Account account;
 
     @ManyToOne
     @JoinColumn(name = "wallet_id")
+    @JsonBackReference
     private Wallet wallet;
 
     @ManyToOne
@@ -61,11 +63,17 @@ public class History implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "event_id")
+    @JsonBackReference
     private Event event;
 
     @ManyToOne
     @JoinColumn(name = "expense_id")
     @JsonBackReference
     private Expense expense;
+
+    @ManyToOne
+    @JoinColumn(name = "budget_id")
+    @JsonBackReference
+    private Budget budget;
 
 }

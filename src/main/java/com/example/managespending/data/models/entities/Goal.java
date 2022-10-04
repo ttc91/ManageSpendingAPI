@@ -1,5 +1,6 @@
 package com.example.managespending.data.models.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -52,6 +53,7 @@ public class Goal implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "account_id", nullable = false)
+    @JsonBackReference
     private Account account;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "goal")

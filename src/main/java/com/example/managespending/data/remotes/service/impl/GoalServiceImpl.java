@@ -51,7 +51,8 @@ public class GoalServiceImpl extends BaseService<BaseDTO> implements GoalService
             if(((GoalDTO) baseDTO).getGoalName().length() == 0 ||
                     ((GoalDTO) baseDTO).getGoalEndDate() == null ||
                     ((GoalDTO) baseDTO).getGoalFinalCost() == null ||
-                    ((GoalDTO) baseDTO).getAccount() == null){
+                    ((GoalDTO) baseDTO).getAccount() == null ||
+                    ((GoalDTO) baseDTO).getGoalFinalCost().compareTo(BigDecimal.ZERO) == 0){
 
                 return ResponseDTO.<BaseDTO>builder()
                         .message("Please input name or end date or account or final cost for goal entity !")
@@ -107,7 +108,8 @@ public class GoalServiceImpl extends BaseService<BaseDTO> implements GoalService
             if(((GoalDTO) baseDTO).getGoalName().length() == 0 ||
                     ((GoalDTO) baseDTO).getGoalEndDate() == null ||
                     ((GoalDTO) baseDTO).getGoalFinalCost() == null ||
-                    ((GoalDTO) baseDTO).getAccount() == null){
+                    ((GoalDTO) baseDTO).getAccount() == null ||
+                    ((GoalDTO) baseDTO).getGoalFinalCost().compareTo(BigDecimal.ZERO) == 0){
 
                 return ResponseDTO.<BaseDTO>builder()
                         .message("Please input name or end date or account or final cost for goal entity !")
@@ -278,7 +280,7 @@ public class GoalServiceImpl extends BaseService<BaseDTO> implements GoalService
 
             List<History> histories = historyRepository.findAllByAccountAndGoalAndHistoryType(account, goal, HistoryType.GOAL);
 
-            histories.stream().forEach(h -> {
+            histories.forEach(h -> {
                 h.getWallet().setWalletBalance(h.getWallet().getWalletBalance().add(h.getHistoryCost()));
                 walletRepository.save(h.getWallet());
             });

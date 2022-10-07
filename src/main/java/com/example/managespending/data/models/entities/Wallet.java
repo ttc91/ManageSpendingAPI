@@ -47,7 +47,14 @@ public class Wallet implements Serializable {
     @OneToMany(cascade = {CascadeType.REMOVE}, mappedBy = "wallet")
     private List<Event> events;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "wallet")
+    @OneToMany(mappedBy = "wallet")
     private List<History> histories;
+
+    @PreRemove
+    public void setHistoryNull (){
+        this.histories.forEach(h -> {
+            h.setWallet(null);
+        });
+    }
 
 }

@@ -31,6 +31,7 @@ public class WalletDTO extends BaseDTO implements Serializable {
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date updatedDate;
 
+    @JsonBackReference
     private AccountDTO account;
 
 }

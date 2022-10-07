@@ -56,7 +56,14 @@ public class Goal implements Serializable {
     @JsonBackReference
     private Account account;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "goal")
+    @OneToMany(mappedBy = "goal")
     private List<History> histories;
+
+    @PreRemove
+    public void setHistoryNull (){
+        this.histories.forEach(h -> {
+            h.setGoal(null);
+        });
+    }
 
 }

@@ -44,7 +44,14 @@ public class Expense implements Serializable {
     @OneToMany(cascade = {CascadeType.REMOVE}, mappedBy = "expense")
     private List<Budget> budgets;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "expense")
+    @OneToMany(mappedBy = "expense")
     private List<History> histories;
+
+    @PreRemove
+    public void setHistoryNull (){
+        this.histories.forEach(h -> {
+            h.setExpense(null);
+        });
+    }
 
 }

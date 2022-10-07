@@ -9,7 +9,6 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -17,34 +16,23 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class GoalDTO extends BaseDTO implements Serializable {
+public class EventDTO extends BaseDTO implements Serializable {
 
-    private Long goalId;
+    private Long eventId;
 
-    private String goalName;
-
-    private Boolean goalStatus;
-
-    private BigDecimal goalPresentCost;
-
-    private BigDecimal goalFinalCost;
-
-    private BigDecimal goalDepositCost;
+    private String eventName;
 
     @JsonFormat(pattern = "yyyy-MM-dd")
-    private Date goalStartDate;
+    private Date eventEndDate;
 
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    private Date goalEndDate;
+    private Boolean eventStatus;
 
-    private String goalIcon;
-
-    private String goalColor;
+    private String eventIcon;
 
     @JsonBackReference
     private AccountDTO account;
 
-    private Long walletId;
+    private WalletDTO wallet;
 
     private List<HistoryDTO> histories;
 

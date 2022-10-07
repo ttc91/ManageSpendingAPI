@@ -41,7 +41,7 @@ public class Budget implements Serializable {
     @Column(columnDefinition = "BOOLEAN DEFAULT FALSE NOT NULL")
     private Boolean budgetStatus;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "budget")
+    @OneToMany(mappedBy = "budget")
     private List<History> histories;
 
     @ManyToOne
@@ -53,5 +53,15 @@ public class Budget implements Serializable {
     @JoinColumn(name = "expense_id", nullable = false)
     @JsonBackReference
     private Expense expense;
+
+    @PreRemove
+    public void setHistoryNull (){
+        this.histories.forEach(h -> h.setBudget(null));
+    }
+
+    @PreUpdate
+    public void updateBudgetState (){
+        this.budgetStatus = this.budgetPresentValue.compareTo(this.budgetValue) >= 0;
+    }
 
 }

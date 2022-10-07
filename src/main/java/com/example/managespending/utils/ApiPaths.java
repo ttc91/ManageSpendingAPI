@@ -7,6 +7,8 @@ public interface ApiPaths {
     String EXPENSE_DOMAIN = "/expense";
     String GOAL_DOMAIN = "/goal";
     String BUDGET_DOMAIN = "/budget";
+    String EVENT_DOMAIN = "/event";
+    String HISTORY_DOMAIN = "/history";
 
     String MODEL_CREATE_DOMAIN = "/create";
     String MODEL_UPDATE_DOMAIN = "/update";

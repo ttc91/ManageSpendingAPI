@@ -52,9 +52,7 @@ public class Wallet implements Serializable {
 
     @PreRemove
     public void setHistoryNull (){
-        this.histories.forEach(h -> {
-            h.setWallet(null);
-        });
+        this.histories.forEach(h -> h.setWallet(null));
     }
 
 }

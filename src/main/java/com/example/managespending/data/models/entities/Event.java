@@ -51,9 +51,7 @@ public class Event implements Serializable {
 
     @PreRemove
     public void setHistoryNull (){
-        this.histories.forEach(h -> {
-            h.setEvent(null);
-        });
+        this.histories.forEach(h -> h.setEvent(null));
     }
 
 }

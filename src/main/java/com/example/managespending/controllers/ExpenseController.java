@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(value = ApiPaths.EXPENSE_DOMAIN)
+@CrossOrigin(origins = "*")
 public class ExpenseController {
 
     @Autowired

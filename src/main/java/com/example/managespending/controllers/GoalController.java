@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(value = ApiPaths.GOAL_DOMAIN)
+@CrossOrigin(origins = "*")
 public class GoalController {
 
     @Autowired

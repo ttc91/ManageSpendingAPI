@@ -49,9 +49,7 @@ public class Expense implements Serializable {
 
     @PreRemove
     public void setHistoryNull (){
-        this.histories.forEach(h -> {
-            h.setExpense(null);
-        });
+        this.histories.forEach(h -> h.setExpense(null));
     }
 
 }

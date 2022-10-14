@@ -15,6 +15,7 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping(value = ApiPaths.ACCOUNT_DOMAIN)
+@CrossOrigin(origins = "*")
 public class AccountController {
 
     @Autowired

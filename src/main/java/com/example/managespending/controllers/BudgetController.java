@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(value = ApiPaths.BUDGET_DOMAIN)
+@CrossOrigin(origins = "*")
 public class BudgetController {
 
     @Autowired

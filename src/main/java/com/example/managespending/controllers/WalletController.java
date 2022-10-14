@@ -15,6 +15,7 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping(ApiPaths.WALLET_DOMAIN)
+@CrossOrigin(origins = "*")
 public class WalletController {
 
     @Autowired

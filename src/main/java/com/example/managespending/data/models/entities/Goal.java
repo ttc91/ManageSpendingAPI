@@ -61,9 +61,7 @@ public class Goal implements Serializable {
 
     @PreRemove
     public void setHistoryNull (){
-        this.histories.forEach(h -> {
-            h.setGoal(null);
-        });
+        this.histories.forEach(h -> h.setGoal(null));
     }
 
 }

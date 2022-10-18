@@ -44,30 +44,59 @@ public class ExpenseServiceImpl extends BaseService<BaseDTO> implements ExpenseS
 
             if(((ExpenseDTO) baseDTO).getExpenseName().length() == 0 ||
                     ((ExpenseDTO) baseDTO).getExpenseIcon().length() == 0 ||
-                    ((ExpenseDTO) baseDTO).getAccount() == null){
+                    ((ExpenseDTO) baseDTO).getIsExpenseSystem() == null){
 
                 return ResponseDTO.<BaseDTO>builder()
-                        .message("Please input name or icon or account for expense entity !")
+                        .message("Please input name or icon or systematic for expense entity !")
                         .statusCode(ResponseCode.RESPONSE_ERROR_SERVER_ERROR)
                         .createdTime(LocalDateTime.now())
                         .build();
 
             }
 
+            if(!((ExpenseDTO) baseDTO).getIsExpenseSystem()){
+                if(((ExpenseDTO) baseDTO).getAccount() == null){
+                    return ResponseDTO.<BaseDTO>builder()
+                            .message("Please input account for expense entity !")
+                            .statusCode(ResponseCode.RESPONSE_ERROR_SERVER_ERROR)
+                            .createdTime(LocalDateTime.now())
+                            .build();
+                }else if(expenseRepository.findByExpenseNameAndAccount(((ExpenseDTO) baseDTO).getExpenseName(),
+                        accountRepository.findAccountByAccountUsername(((ExpenseDTO) baseDTO).getAccount().getAccountUsername())) != null
+                || expenseRepository.findByExpenseNameAndIsExpenseSystem(((ExpenseDTO) baseDTO).getExpenseName(), true) != null){
+                    return ResponseDTO.<BaseDTO>builder()
+                            .message("Expense is exist !")
+                            .statusCode(ResponseCode.RESPONSE_ERROR_SERVER_ERROR)
+                            .createdTime(LocalDateTime.now())
+                            .build();
+                }
+
+            }else {
+                if(expenseRepository.findByExpenseName(((ExpenseDTO) baseDTO).getExpenseName()) != null){
+                    return ResponseDTO.<BaseDTO>builder()
+                            .message("Expense is exist !")
+                            .statusCode(ResponseCode.RESPONSE_ERROR_SERVER_ERROR)
+                            .createdTime(LocalDateTime.now())
+                            .build();
+                }
+            }
+
             Expense expense = mapper.mapToEntity((ExpenseDTO) baseDTO, Expense.class);
 
-            History history = new History();
-            history.setAccount(accountRepository.findAccountByAccountUsername(((ExpenseDTO) baseDTO).getAccount().getAccountUsername()));
-            history.setHistoryType(HistoryType.CREATE);
-            history.setHistoryNote("Created new expense name " + expense.getExpenseName());
-
-            expense.setAccount(accountRepository.findAccountByAccountUsername(((ExpenseDTO) baseDTO).getAccount().getAccountUsername()));
+            if(!((ExpenseDTO) baseDTO).getIsExpenseSystem()){
+                expense.setAccount(accountRepository.findAccountByAccountUsername(((ExpenseDTO) baseDTO).getAccount().getAccountUsername()));
+            }
 
             expenseRepository.save(expense);
 
-            history.setExpense(expense);
-            historyRepository.save(history);
-
+            if(!((ExpenseDTO) baseDTO).getIsExpenseSystem()){
+                History history = new History();
+                history.setAccount(accountRepository.findAccountByAccountUsername(((ExpenseDTO) baseDTO).getAccount().getAccountUsername()));
+                history.setHistoryType(HistoryType.CREATE);
+                history.setHistoryNote("Created new expense name " + expense.getExpenseName());
+                history.setExpense(expense);
+                historyRepository.save(history);
+            }
 
             return ResponseDTO.<BaseDTO>builder()
                     .message("Create expense complete !!!")
@@ -96,14 +125,41 @@ public class ExpenseServiceImpl extends BaseService<BaseDTO> implements ExpenseS
 
             if(((ExpenseDTO) baseDTO).getExpenseName().length() == 0 ||
                     ((ExpenseDTO) baseDTO).getExpenseIcon().length() == 0 ||
-                    ((ExpenseDTO) baseDTO).getAccount() == null){
+                    ((ExpenseDTO) baseDTO).getIsExpenseSystem() == null){
 
                 return ResponseDTO.<BaseDTO>builder()
-                        .message("Please input name or icon or account for expense entity !")
+                        .message("Please input name or icon or systematic for expense entity !")
                         .statusCode(ResponseCode.RESPONSE_ERROR_SERVER_ERROR)
                         .createdTime(LocalDateTime.now())
                         .build();
 
+            }
+
+            if(!((ExpenseDTO) baseDTO).getIsExpenseSystem()){
+                if(((ExpenseDTO) baseDTO).getAccount() == null){
+                    return ResponseDTO.<BaseDTO>builder()
+                            .message("Please input account for expense entity !")
+                            .statusCode(ResponseCode.RESPONSE_ERROR_SERVER_ERROR)
+                            .createdTime(LocalDateTime.now())
+                            .build();
+                }else if(expenseRepository.findByExpenseNameAndAccount(((ExpenseDTO) baseDTO).getExpenseName(),
+                        accountRepository.findAccountByAccountUsername(((ExpenseDTO) baseDTO).getAccount().getAccountUsername())) != null
+                        || expenseRepository.findByExpenseNameAndIsExpenseSystem(((ExpenseDTO) baseDTO).getExpenseName(), true) != null){
+                    return ResponseDTO.<BaseDTO>builder()
+                            .message("Expense is exist !")
+                            .statusCode(ResponseCode.RESPONSE_ERROR_SERVER_ERROR)
+                            .createdTime(LocalDateTime.now())
+                            .build();
+                }
+
+            }else {
+                if(expenseRepository.findByExpenseName(((ExpenseDTO) baseDTO).getExpenseName()) != null){
+                    return ResponseDTO.<BaseDTO>builder()
+                            .message("Expense is exist !")
+                            .statusCode(ResponseCode.RESPONSE_ERROR_SERVER_ERROR)
+                            .createdTime(LocalDateTime.now())
+                            .build();
+                }
             }
 
             Optional<Expense> opt = expenseRepository.findById(((ExpenseDTO) baseDTO).getExpenseId());
@@ -118,21 +174,25 @@ public class ExpenseServiceImpl extends BaseService<BaseDTO> implements ExpenseS
 
             Expense expense = opt.get();
 
-            History history = new History();
-            history.setAccount(accountRepository.findAccountByAccountUsername(((ExpenseDTO) baseDTO).getAccount().getAccountUsername()));
-            history.setHistoryType(HistoryType.UPDATE);
-            history.setHistoryNote("Updated expense name " + expense.getExpenseName());
-
             expense.setExpenseType(((ExpenseDTO) baseDTO).getExpenseType());
+            expense.setIsExpenseSystem(((ExpenseDTO) baseDTO).getIsExpenseSystem());
             expense.setExpenseName(((ExpenseDTO) baseDTO).getExpenseName());
             expense.setExpenseIcon(((ExpenseDTO) baseDTO).getExpenseIcon());
-            expense.setAccount(accountRepository.findAccountByAccountUsername(((ExpenseDTO) baseDTO).getAccount().getAccountUsername()));
+
+            if(!((ExpenseDTO) baseDTO).getIsExpenseSystem()){
+                expense.setAccount(accountRepository.findAccountByAccountUsername(((ExpenseDTO) baseDTO).getAccount().getAccountUsername()));
+            }
 
             expenseRepository.save(expense);
 
-            history.setExpense(expense);
-            historyRepository.save(history);
-
+            if(!((ExpenseDTO) baseDTO).getIsExpenseSystem()){
+                History history = new History();
+                history.setAccount(accountRepository.findAccountByAccountUsername(((ExpenseDTO) baseDTO).getAccount().getAccountUsername()));
+                history.setHistoryType(HistoryType.UPDATE);
+                history.setHistoryNote("Updated expense name " + expense.getExpenseName());
+                history.setExpense(expense);
+                historyRepository.save(history);
+            }
 
             return ResponseDTO.<BaseDTO>builder()
                     .message("Update expense complete !!!")
@@ -245,6 +305,9 @@ public class ExpenseServiceImpl extends BaseService<BaseDTO> implements ExpenseS
 
             Account account = accountRepository.findAccountByAccountUsername(((AccountDTO) baseDTO).getAccountUsername());
             List<Expense> expenses = expenseRepository.findAllByAccount(account);
+            List<Expense> expensesSystematic = expenseRepository.findAllByIsExpenseSystem(true);
+
+            expenses.addAll(expensesSystematic);
 
             return ResponseDTO.<BaseDTO>builder()
                     .message("Get expenses complete !!!")

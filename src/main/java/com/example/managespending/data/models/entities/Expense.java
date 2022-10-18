@@ -26,7 +26,7 @@ public class Expense implements Serializable {
     @Column
     private Long expenseId;
 
-    @Column(length = 30, nullable = false, unique = true)
+    @Column(length = 30, nullable = false)
     private String expenseName;
 
     @Column(nullable = false)
@@ -36,8 +36,11 @@ public class Expense implements Serializable {
     @Column(nullable = false)
     private String expenseIcon;
 
+    @Column(nullable = false)
+    private Boolean isExpenseSystem;
+
     @ManyToOne
-    @JoinColumn(name = "account_id", nullable = false)
+    @JoinColumn(name = "account_id")
     @JsonBackReference
     private Account account;
 

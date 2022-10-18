@@ -11,5 +11,9 @@ import java.util.List;
 public interface ExpenseRepository extends JpaRepository<Expense, Long> {
 
     List<Expense> findAllByAccount(Account account);
+    Expense findByExpenseName(String expenseName);
+    Expense findByExpenseNameAndAccount(String expenseName, Account account);
+    Expense findByExpenseNameAndIsExpenseSystem(String expenseName, Boolean isExpenseSystem);
+    List<Expense> findAllByIsExpenseSystem(Boolean isExpenseSystem);
 
 }

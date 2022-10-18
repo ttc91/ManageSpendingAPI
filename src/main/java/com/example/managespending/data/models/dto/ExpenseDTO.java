@@ -25,6 +25,8 @@ public class ExpenseDTO extends BaseDTO implements Serializable {
 
     private String expenseIcon;
 
+    private Boolean isExpenseSystem;
+
     @JsonBackReference
     private AccountDTO account;
 

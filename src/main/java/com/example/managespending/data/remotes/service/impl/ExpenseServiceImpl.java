@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -142,9 +143,11 @@ public class ExpenseServiceImpl extends BaseService<BaseDTO> implements ExpenseS
                             .statusCode(ResponseCode.RESPONSE_ERROR_SERVER_ERROR)
                             .createdTime(LocalDateTime.now())
                             .build();
-                }else if(expenseRepository.findByExpenseNameAndAccount(((ExpenseDTO) baseDTO).getExpenseName(),
+                }else if((expenseRepository.findByExpenseNameAndAccount(((ExpenseDTO) baseDTO).getExpenseName(),
                         accountRepository.findAccountByAccountUsername(((ExpenseDTO) baseDTO).getAccount().getAccountUsername())) != null
-                        || expenseRepository.findByExpenseNameAndIsExpenseSystem(((ExpenseDTO) baseDTO).getExpenseName(), true) != null){
+                        && (!Objects.equals(expenseRepository.findByExpenseName(((ExpenseDTO) baseDTO).getExpenseName()).getExpenseId(), ((ExpenseDTO) baseDTO).getExpenseId()))
+                        || ( expenseRepository.findByExpenseNameAndIsExpenseSystem(((ExpenseDTO) baseDTO).getExpenseName(), true) != null)
+                        && (!Objects.equals(expenseRepository.findByExpenseName(((ExpenseDTO) baseDTO).getExpenseName()).getExpenseId(), ((ExpenseDTO) baseDTO).getExpenseId())))){
                     return ResponseDTO.<BaseDTO>builder()
                             .message("Expense is exist !")
                             .statusCode(ResponseCode.RESPONSE_ERROR_SERVER_ERROR)
@@ -153,9 +156,10 @@ public class ExpenseServiceImpl extends BaseService<BaseDTO> implements ExpenseS
                 }
 
             }else {
-                if(expenseRepository.findByExpenseName(((ExpenseDTO) baseDTO).getExpenseName()) != null){
+                if(expenseRepository.findByExpenseName(((ExpenseDTO) baseDTO).getExpenseName()) != null
+                    && (!Objects.equals(expenseRepository.findByExpenseName(((ExpenseDTO) baseDTO).getExpenseName()).getExpenseId(), ((ExpenseDTO) baseDTO).getExpenseId()))){
                     return ResponseDTO.<BaseDTO>builder()
-                            .message("Expense is exist !")
+                            .message("Expense is exist !!!")
                             .statusCode(ResponseCode.RESPONSE_ERROR_SERVER_ERROR)
                             .createdTime(LocalDateTime.now())
                             .build();

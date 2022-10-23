@@ -189,7 +189,8 @@ public class BudgetServiceImpl extends BaseService<BaseDTO> implements BudgetSer
                         .createdTime(LocalDateTime.now())
                         .build();
             }else {
-                if(budgetRepository.findBudgetByAccountAndExpense(account, expenseOpt.get()) != null){
+                if(budgetRepository.findBudgetByAccountAndExpense(account, expenseOpt.get()) != null &&
+                        budgetRepository.findBudgetByAccountAndExpense(account, expenseOpt.get()) != budget){
                     return ResponseDTO.<BaseDTO>builder()
                             .message("Expense is exist in another budget so cannot update budget !!!")
                             .statusCode(ResponseCode.RESPONSE_ERROR_SERVER_ERROR)

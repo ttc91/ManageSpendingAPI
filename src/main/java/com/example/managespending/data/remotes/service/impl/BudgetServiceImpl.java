@@ -67,7 +67,6 @@ public class BudgetServiceImpl extends BaseService<BaseDTO> implements BudgetSer
             }
 
             Account account = accountRepository.findAccountByAccountUsername(((BudgetDTO) baseDTO).getAccount().getAccountUsername());
-            Optional<Expense> expenseOtp = expenseRepository.findById(((BudgetDTO) baseDTO).getExpense().getExpenseId());
 
             if(budgetRepository.findBudgetByAccountAndBudgetName(account, ((BudgetDTO) baseDTO).getBudgetName()) != null){
                 return ResponseDTO.<BaseDTO>builder()
@@ -77,12 +76,22 @@ public class BudgetServiceImpl extends BaseService<BaseDTO> implements BudgetSer
                         .build();
             }
 
-            if(!expenseOtp.isPresent()){
+            Optional<Expense> expenseOpt = expenseRepository.findById(((BudgetDTO) baseDTO).getExpense().getExpenseId());
+
+            if(!expenseOpt.isPresent()){
                 return ResponseDTO.<BaseDTO>builder()
                         .message("Expense is not exist !!!")
                         .statusCode(ResponseCode.RESPONSE_ERROR_SERVER_ERROR)
                         .createdTime(LocalDateTime.now())
                         .build();
+            }else {
+                if(budgetRepository.findBudgetByAccountAndExpense(account, expenseOpt.get()) != null){
+                    return ResponseDTO.<BaseDTO>builder()
+                            .message("Expense is exist in another budget so cannot create new budget !!!")
+                            .statusCode(ResponseCode.RESPONSE_ERROR_SERVER_ERROR)
+                            .createdTime(LocalDateTime.now())
+                            .build();
+                }
             }
 
             String[] str = ((BudgetDTO) baseDTO).getBudgetMothYear().split("-");
@@ -98,7 +107,7 @@ public class BudgetServiceImpl extends BaseService<BaseDTO> implements BudgetSer
             budget.setBudgetStatus(false);
             budget.setBudgetPresentValue(BigDecimal.ZERO);
             budget.setAccount(account);
-            budget.setExpense(expenseOtp.get());
+            budget.setExpense(expenseOpt.get());
             budgetRepository.save(budget);
 
             History history = new History();
@@ -162,7 +171,6 @@ public class BudgetServiceImpl extends BaseService<BaseDTO> implements BudgetSer
 
             Budget budget = budgetOpt.get();
             Account account = accountRepository.findAccountByAccountUsername(((BudgetDTO) baseDTO).getAccount().getAccountUsername());
-            Optional<Expense> expenseOtp = expenseRepository.findById(((BudgetDTO) baseDTO).getExpense().getExpenseId());
 
             if(budgetRepository.findBudgetByAccountAndBudgetName(account, ((BudgetDTO) baseDTO).getBudgetName()) != null){
                 return ResponseDTO.<BaseDTO>builder()
@@ -172,12 +180,22 @@ public class BudgetServiceImpl extends BaseService<BaseDTO> implements BudgetSer
                         .build();
             }
 
-            if(!expenseOtp.isPresent()){
+            Optional<Expense> expenseOpt = expenseRepository.findById(((BudgetDTO) baseDTO).getExpense().getExpenseId());
+
+            if(!expenseOpt.isPresent()){
                 return ResponseDTO.<BaseDTO>builder()
                         .message("Expense is not exist !!!")
                         .statusCode(ResponseCode.RESPONSE_ERROR_SERVER_ERROR)
                         .createdTime(LocalDateTime.now())
                         .build();
+            }else {
+                if(budgetRepository.findBudgetByAccountAndExpense(account, expenseOpt.get()) != null){
+                    return ResponseDTO.<BaseDTO>builder()
+                            .message("Expense is exist in another budget so cannot update budget !!!")
+                            .statusCode(ResponseCode.RESPONSE_ERROR_SERVER_ERROR)
+                            .createdTime(LocalDateTime.now())
+                            .build();
+                }
             }
 
             String[] str = ((BudgetDTO) baseDTO).getBudgetMothYear().split("-");
@@ -192,7 +210,7 @@ public class BudgetServiceImpl extends BaseService<BaseDTO> implements BudgetSer
             budget.setBudgetMothYear(((BudgetDTO) baseDTO).getBudgetMothYear());
             budget.setBudgetName(((BudgetDTO) baseDTO).getBudgetName());
             budget.setBudgetValue(((BudgetDTO) baseDTO).getBudgetValue());
-            budget.setExpense(expenseOtp.get());
+            budget.setExpense(expenseOpt.get());
             budget.setBudgetIcon(((BudgetDTO) baseDTO).getBudgetIcon());
             budgetRepository.save(budget);
 

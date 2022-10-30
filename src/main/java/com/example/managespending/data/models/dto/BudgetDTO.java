@@ -32,6 +32,8 @@ public class BudgetDTO extends BaseDTO implements Serializable {
 
     private Boolean budgetStatus;
 
+    private Boolean budgetExpired;
+
     @JsonBackReference
     private AccountDTO account;
 

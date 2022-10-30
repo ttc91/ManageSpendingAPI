@@ -41,6 +41,9 @@ public class Budget implements Serializable {
     @Column(columnDefinition = "BOOLEAN DEFAULT FALSE NOT NULL")
     private Boolean budgetStatus;
 
+    @Column(columnDefinition = "BOOLEAN DEFAULT FALSE NOT NULL")
+    private Boolean budgetExpired;
+
     @OneToMany(mappedBy = "budget")
     private List<History> histories;
 

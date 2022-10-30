@@ -107,6 +107,7 @@ public class BudgetServiceImpl extends BaseService<BaseDTO> implements BudgetSer
             budget.setBudgetStatus(false);
             budget.setBudgetPresentValue(BigDecimal.ZERO);
             budget.setAccount(account);
+            budget.setBudgetExpired(false);
             budget.setExpense(expenseOpt.get());
             budgetRepository.save(budget);
 

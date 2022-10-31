@@ -36,6 +36,7 @@ public class BudgetController {
     public ResponseEntity<ResponseDTO<BaseDTO>> update (@RequestBody BudgetDTO request) {
 
         try{
+            System.out.println(request.toString());
             return new ResponseEntity<>(service.update(request), HttpStatus.OK);
         }catch (Exception e){
             e.printStackTrace();

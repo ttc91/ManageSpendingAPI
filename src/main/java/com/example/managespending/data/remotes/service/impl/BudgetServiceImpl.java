@@ -173,7 +173,8 @@ public class BudgetServiceImpl extends BaseService<BaseDTO> implements BudgetSer
             Budget budget = budgetOpt.get();
             Account account = accountRepository.findAccountByAccountUsername(((BudgetDTO) baseDTO).getAccount().getAccountUsername());
 
-            if(budgetRepository.findBudgetByAccountAndBudgetName(account, ((BudgetDTO) baseDTO).getBudgetName()) != null){
+            if(budgetRepository.findBudgetByAccountAndBudgetName(account, ((BudgetDTO) baseDTO).getBudgetName()) != null
+                && budgetRepository.findBudgetByAccountAndBudgetName(account, ((BudgetDTO) baseDTO).getBudgetName()) != budget ){
                 return ResponseDTO.<BaseDTO>builder()
                         .message("Budget name is exist !!!")
                         .statusCode(ResponseCode.RESPONSE_ERROR_SERVER_ERROR)

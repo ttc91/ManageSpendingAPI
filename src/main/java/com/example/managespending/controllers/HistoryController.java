@@ -1,5 +1,6 @@
 package com.example.managespending.controllers;
 
+import com.example.managespending.data.models.dto.AccountDTO;
 import com.example.managespending.data.models.dto.HistoryDTO;
 import com.example.managespending.data.models.dto.base.BaseDTO;
 import com.example.managespending.data.models.dto.base.ResponseDTO;
@@ -48,6 +49,18 @@ public class HistoryController {
 
         try{
             return new ResponseEntity<>(service.delete(request), HttpStatus.OK);
+        }catch (Exception e){
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+    }
+
+    @GetMapping(value = ApiPaths.HISTORY_GET_LIST_BY_WITHDRAW)
+    public ResponseEntity<ResponseDTO<BaseDTO>> getAllByWithdraw (@RequestBody AccountDTO request) {
+
+        try{
+            return new ResponseEntity<>(service.getAllByWithdraw(request), HttpStatus.OK);
         }catch (Exception e){
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

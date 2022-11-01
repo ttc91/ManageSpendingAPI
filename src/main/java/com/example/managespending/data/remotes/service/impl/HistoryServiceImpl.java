@@ -1,6 +1,7 @@
 package com.example.managespending.data.remotes.service.impl;
 
 import com.example.managespending.data.mapper.HistoryMapper;
+import com.example.managespending.data.models.dto.AccountDTO;
 import com.example.managespending.data.models.dto.HistoryDTO;
 import com.example.managespending.data.models.dto.base.BaseDTO;
 import com.example.managespending.data.models.dto.base.ResponseDTO;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -455,7 +457,31 @@ public class HistoryServiceImpl extends BaseService<BaseDTO> implements HistoryS
                     .build();
         }
 
+    }
 
+    @Override
+    public ResponseDTO<BaseDTO> getAllByWithdraw(BaseDTO baseDTO) {
+
+        try{
+
+            Account account = accountRepository.findAccountByAccountUsername(((AccountDTO) baseDTO).getAccountUsername());
+            List<History> histories = historyRepository.findAllByAccountAndHistoryAction(account, HistoryAction.WITHDRAW);
+
+            return ResponseDTO.<BaseDTO>builder()
+                    .message("Get histories complete !!!")
+                    .statusCode(ResponseCode.RESPONSE_OK_CODE)
+                    .objectList(mapper.mapToDTOList(histories, HistoryDTO.class))
+                    .createdTime(LocalDateTime.now())
+                    .build();
+
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResponseDTO.<BaseDTO>builder()
+                    .message("Get histories fail !!!")
+                    .statusCode(ResponseCode.RESPONSE_ERROR_SERVER_ERROR)
+                    .createdTime(LocalDateTime.now())
+                    .build();
+        }
 
     }
 }

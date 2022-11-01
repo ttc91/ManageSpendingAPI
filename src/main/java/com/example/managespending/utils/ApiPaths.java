@@ -21,5 +21,7 @@ public interface ApiPaths {
 
     String GOAL_DEPOSIT_DOMAIN = "/goal_deposit";
 
+    String HISTORY_GET_LIST_BY_WITHDRAW = "/get_list_by_withdraw";
+
 
 }

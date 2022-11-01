@@ -9,4 +9,6 @@ public interface HistoryService {
     ResponseDTO<BaseDTO> delete(BaseDTO baseDTO);
 
     ResponseDTO<BaseDTO> update(BaseDTO baseDTO);
+
+    ResponseDTO<BaseDTO> getAllByWithdraw(BaseDTO baseDTO);
 }

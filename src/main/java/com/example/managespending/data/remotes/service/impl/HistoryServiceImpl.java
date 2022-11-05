@@ -5,6 +5,8 @@ import com.example.managespending.data.models.dto.AccountDTO;
 import com.example.managespending.data.models.dto.HistoryDTO;
 import com.example.managespending.data.models.dto.base.BaseDTO;
 import com.example.managespending.data.models.dto.base.ResponseDTO;
+import com.example.managespending.data.models.dto.request.GetTotalExpenseDTO;
+import com.example.managespending.data.models.dto.response.PieItemDTO;
 import com.example.managespending.data.models.entities.*;
 import com.example.managespending.data.remotes.repositories.*;
 import com.example.managespending.data.remotes.service.HistoryService;
@@ -16,10 +18,12 @@ import com.example.managespending.utils.enums.HistoryType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.Tuple;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class HistoryServiceImpl extends BaseService<BaseDTO> implements HistoryService {
@@ -460,7 +464,68 @@ public class HistoryServiceImpl extends BaseService<BaseDTO> implements HistoryS
     }
 
     @Override
-    public ResponseDTO<BaseDTO> getAllByWithdraw(BaseDTO baseDTO) {
+    public ResponseDTO<BaseDTO> getAllByWithdrawPieChart(BaseDTO baseDTO) {
+
+        try{
+
+            Account account = accountRepository.findAccountByAccountUsername(((GetTotalExpenseDTO) baseDTO).getAccountUsername());
+            List<Tuple> pieChartTuple = historyRepository.getTransactionListByAccountAndHistoryAction(account.getAccountId(), HistoryAction.WITHDRAW.toString(), ((GetTotalExpenseDTO) baseDTO).getDate(), ((GetTotalExpenseDTO) baseDTO).getGetDateType().value);
+
+            List<PieItemDTO> pieChartList = pieChartTuple.stream().map(
+                    p -> new PieItemDTO(p.get("expense_name", String.class), p.get("total_cost", BigDecimal.class))
+            ).collect(Collectors.toList());
+
+            return ResponseDTO.<BaseDTO>builder()
+                    .message("Get histories complete !!!")
+                    .statusCode(ResponseCode.RESPONSE_OK_CODE)
+                    .objectList(pieChartList)
+                    .createdTime(LocalDateTime.now())
+                    .build();
+
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResponseDTO.<BaseDTO>builder()
+                    .message("Get histories fail !!!")
+                    .statusCode(ResponseCode.RESPONSE_ERROR_SERVER_ERROR)
+                    .createdTime(LocalDateTime.now())
+                    .build();
+        }
+
+    }
+
+    @Override
+    public ResponseDTO<BaseDTO> getAllByRechargePieChart(BaseDTO baseDTO) {
+
+        try{
+
+            Account account = accountRepository.findAccountByAccountUsername(((GetTotalExpenseDTO) baseDTO).getAccountUsername());
+
+            List<Tuple> pieChartTuple = historyRepository.getTransactionListByAccountAndHistoryAction(account.getAccountId(), HistoryAction.RECHARGE.toString(), ((GetTotalExpenseDTO) baseDTO).getDate(), ((GetTotalExpenseDTO) baseDTO).getGetDateType().value);
+
+            List<PieItemDTO> pieChartList = pieChartTuple.stream().map(
+                 p -> new PieItemDTO(p.get("expense_name", String.class), p.get("total_cost", BigDecimal.class))
+            ).collect(Collectors.toList());
+
+            return ResponseDTO.<BaseDTO>builder()
+                    .message("Get histories complete !!!")
+                    .statusCode(ResponseCode.RESPONSE_OK_CODE)
+                    .objectList(pieChartList)
+                    .createdTime(LocalDateTime.now())
+                    .build();
+
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResponseDTO.<BaseDTO>builder()
+                    .message("Get histories fail !!!")
+                    .statusCode(ResponseCode.RESPONSE_ERROR_SERVER_ERROR)
+                    .createdTime(LocalDateTime.now())
+                    .build();
+        }
+
+    }
+
+    @Override
+    public ResponseDTO<BaseDTO> getAllByWithdrawBarChart(BaseDTO baseDTO) {
 
         try{
 
@@ -484,4 +549,5 @@ public class HistoryServiceImpl extends BaseService<BaseDTO> implements HistoryS
         }
 
     }
+
 }

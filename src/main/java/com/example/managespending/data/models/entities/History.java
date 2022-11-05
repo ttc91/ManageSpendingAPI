@@ -34,6 +34,7 @@ public class History implements Serializable {
 
     @Column
     @CreationTimestamp
+    @Temporal(TemporalType.DATE)
     private Date historyNotedDate;
 
     @Column

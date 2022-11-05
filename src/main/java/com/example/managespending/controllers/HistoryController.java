@@ -4,6 +4,7 @@ import com.example.managespending.data.models.dto.AccountDTO;
 import com.example.managespending.data.models.dto.HistoryDTO;
 import com.example.managespending.data.models.dto.base.BaseDTO;
 import com.example.managespending.data.models.dto.base.ResponseDTO;
+import com.example.managespending.data.models.dto.request.GetTotalExpenseDTO;
 import com.example.managespending.data.remotes.service.HistoryService;
 import com.example.managespending.utils.ApiPaths;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,11 +57,35 @@ public class HistoryController {
 
     }
 
-    @GetMapping(value = ApiPaths.HISTORY_GET_LIST_BY_WITHDRAW)
-    public ResponseEntity<ResponseDTO<BaseDTO>> getAllByWithdraw (@RequestBody AccountDTO request) {
+    @GetMapping(value = ApiPaths.HISTORY_GET_LIST_BY_WITHDRAW_PIE_CHART)
+    public ResponseEntity<ResponseDTO<BaseDTO>> getAllByWithdrawPieChart (@RequestBody GetTotalExpenseDTO request) {
 
         try{
-            return new ResponseEntity<>(service.getAllByWithdraw(request), HttpStatus.OK);
+            return new ResponseEntity<>(service.getAllByWithdrawPieChart(request), HttpStatus.OK);
+        }catch (Exception e){
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+    }
+
+    @GetMapping(value = ApiPaths.HISTORY_GET_LIST_BY_RECHARGE_PIE_CHART)
+    public ResponseEntity<ResponseDTO<BaseDTO>> getAllByRechargePieChart (@RequestBody GetTotalExpenseDTO request) {
+
+        try{
+            return new ResponseEntity<>(service.getAllByRechargePieChart(request), HttpStatus.OK);
+        }catch (Exception e){
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+    }
+
+    @GetMapping(value = ApiPaths.HISTORY_GET_LIST_BY_WITHDRAW_BAR_CHART)
+    public ResponseEntity<ResponseDTO<BaseDTO>> getAllByWithdrawBarChar (@RequestBody AccountDTO request) {
+
+        try{
+            return new ResponseEntity<>(service.getAllByWithdrawBarChart(request), HttpStatus.OK);
         }catch (Exception e){
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

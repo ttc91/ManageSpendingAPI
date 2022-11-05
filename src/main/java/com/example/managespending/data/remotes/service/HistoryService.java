@@ -10,5 +10,9 @@ public interface HistoryService {
 
     ResponseDTO<BaseDTO> update(BaseDTO baseDTO);
 
-    ResponseDTO<BaseDTO> getAllByWithdraw(BaseDTO baseDTO);
+    ResponseDTO<BaseDTO> getAllByWithdrawPieChart(BaseDTO baseDTO);
+
+    ResponseDTO<BaseDTO> getAllByRechargePieChart(BaseDTO baseDTO);
+
+    ResponseDTO<BaseDTO> getAllByWithdrawBarChart(BaseDTO baseDTO);
 }

@@ -40,6 +40,10 @@ public class Account implements Serializable {
     @UpdateTimestamp
     private Date updatedDate;
 
+    @ManyToOne
+    @JoinColumn(name = "account_role", nullable = false)
+    private Role role;
+
     @OneToMany(cascade = {CascadeType.REMOVE}, mappedBy = "account")
     private List<Wallet> wallets;
 

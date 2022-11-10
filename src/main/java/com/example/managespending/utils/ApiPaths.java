@@ -9,6 +9,7 @@ public interface ApiPaths {
     String BUDGET_DOMAIN = "/budget";
     String EVENT_DOMAIN = "/event";
     String HISTORY_DOMAIN = "/history";
+    String ROLE_DOMAIN = "/role";
 
     String MODEL_CREATE_DOMAIN = "/create";
     String MODEL_UPDATE_DOMAIN = "/update";
@@ -18,6 +19,7 @@ public interface ApiPaths {
 
     String ACCOUNT_SIGN_IN_DOMAIN = "/sign_in";
     String ACCOUNT_CHANGE_PASSWORD = "/change_password";
+    String ACCOUNT_UPDATE_ROLE = "/update_role";
 
     String GOAL_DEPOSIT_DOMAIN = "/goal_deposit";
 

@@ -144,7 +144,7 @@ public class GoalServiceImpl extends BaseService<BaseDTO> implements GoalService
             goal.setGoalColor(((GoalDTO) baseDTO).getGoalColor());
             goal.setGoalIcon(((GoalDTO) baseDTO).getGoalIcon());
             goal.setGoalName(((GoalDTO) baseDTO).getGoalName());
-
+            goal.setGoalPresentCost(((GoalDTO) baseDTO).getGoalPresentCost());
             goal.setGoalStatus(goal.getGoalPresentCost().compareTo(goal.getGoalFinalCost()) >= 0);
 
             goalRepository.save(goal);
@@ -351,10 +351,11 @@ public class GoalServiceImpl extends BaseService<BaseDTO> implements GoalService
     public ResponseDTO<BaseDTO> getAll(BaseDTO baseDTO) {
 
         try{
-
             Account account = accountRepository.findAccountByAccountUsername(((AccountDTO) baseDTO).getAccountUsername());
             List<Goal> goals = goalRepository.findAllByAccount(account);
-
+            for (int i = 0; i < goals.size(); i++) {
+                System.out.print(goals.indexOf(i));
+            }
             return ResponseDTO.<BaseDTO>builder()
                     .message("Get goals complete !!!")
                     .statusCode(ResponseCode.RESPONSE_OK_CODE)
@@ -372,5 +373,48 @@ public class GoalServiceImpl extends BaseService<BaseDTO> implements GoalService
 
         }
 
+    }
+
+    @Override
+    public ResponseDTO<BaseDTO> getByStatus(BaseDTO baseDTO) {
+        try{
+            if(((GoalDTO)baseDTO).getGoalStatus()==null){
+                return ResponseDTO.<BaseDTO>builder()
+                        .message("Please enter the goal status !!!")
+                        .statusCode(ResponseCode.RESPONSE_ERROR_SERVER_ERROR)
+                        .createdTime(LocalDateTime.now())
+                        .build();
+            }else if(((GoalDTO)baseDTO).getAccount().getAccountUsername()==null){
+                return ResponseDTO.<BaseDTO>builder()
+                        .message("Please enter the account_name !!!")
+                        .statusCode(ResponseCode.RESPONSE_ERROR_SERVER_ERROR)
+                        .createdTime(LocalDateTime.now())
+                        .build();
+            }else{
+                Account account  = accountRepository.findAccountByAccountUsername(((GoalDTO)baseDTO).getAccount().getAccountUsername());
+                if(account==null){
+                    return ResponseDTO.<BaseDTO>builder()
+                            .message("The account doesn't exist !!!")
+                            .statusCode(ResponseCode.RESPONSE_BAD_REQUEST)
+                            .createdTime(LocalDateTime.now())
+                            .build();
+                }else{
+                    List<Goal> listGoal = goalRepository.findGoalsByAccountAndGoalStatus(account,((GoalDTO)baseDTO).getGoalStatus());
+                    return ResponseDTO.<BaseDTO>builder()
+                            .message("Get goals complete !!!")
+                            .statusCode(ResponseCode.RESPONSE_OK_CODE)
+                            .objectList(mapper.mapToDTOList(listGoal, GoalDTO.class))
+                            .createdTime(LocalDateTime.now())
+                            .build();
+                }
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResponseDTO.<BaseDTO>builder()
+                    .message("Get goals fail !!!")
+                    .statusCode(ResponseCode.RESPONSE_ERROR_SERVER_ERROR)
+                    .createdTime(LocalDateTime.now())
+                    .build();
+        }
     }
 }

@@ -26,4 +26,6 @@ public class AccountDTO extends BaseDTO implements Serializable {
 
     private String rePassword;
 
+    private RoleDTO role;
+
 }

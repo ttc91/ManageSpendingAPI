@@ -91,4 +91,14 @@ public class GoalController {
 
     }
 
+    @GetMapping(value = ApiPaths.MODEL_GET_LIST_BY_STATUS)
+    public ResponseEntity<ResponseDTO<BaseDTO>> getByStatus(@RequestBody GoalDTO request){
+        try{
+            return new ResponseEntity<>(service.getByStatus(request), HttpStatus.OK);
+        }catch (Exception e){
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
 }

@@ -11,5 +11,5 @@ import java.util.List;
 public interface GoalRepository extends JpaRepository<Goal, Long> {
 
     List<Goal> findAllByAccount(Account account);
-
+    List<Goal> findGoalsByAccountAndGoalStatus(Account account, boolean goalStatus);
 }

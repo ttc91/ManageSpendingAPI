@@ -13,4 +13,6 @@ public interface EventService {
     ResponseDTO<BaseDTO> getOne(BaseDTO baseDTO);
 
     ResponseDTO<BaseDTO> getAll(BaseDTO baseDTO);
+
+    ResponseDTO<BaseDTO> getByStatus(BaseDTO baseDTO);
 }

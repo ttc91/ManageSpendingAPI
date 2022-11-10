@@ -3,6 +3,7 @@ package com.example.managespending.controllers;
 import com.example.managespending.data.models.dto.AccountDTO;
 import com.example.managespending.data.models.dto.base.BaseDTO;
 import com.example.managespending.data.models.dto.base.ResponseDTO;
+import com.example.managespending.data.models.dto.request.JwtRequestDTO;
 import com.example.managespending.data.remotes.service.AccountService;
 import com.example.managespending.utils.ApiPaths;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +35,7 @@ public class AccountController {
     }
 
     @PostMapping(value = ApiPaths.ACCOUNT_SIGN_IN_DOMAIN)
-    public ResponseEntity<ResponseDTO<BaseDTO>> signIn (@RequestBody @Valid AccountDTO request) {
+    public ResponseEntity<ResponseDTO<BaseDTO>> signIn (@RequestBody @Valid JwtRequestDTO request) {
 
         try{
             return new ResponseEntity<>(service.signIn(request), HttpStatus.OK);
@@ -50,6 +51,18 @@ public class AccountController {
 
         try{
             return new ResponseEntity<>(service.changePassword(request), HttpStatus.OK);
+        }catch (Exception e){
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+    }
+
+    @PostMapping(value = ApiPaths.ACCOUNT_UPDATE_ROLE)
+    public ResponseEntity<ResponseDTO<BaseDTO>> updateRole (@RequestBody @Valid AccountDTO request) {
+
+        try{
+            return new ResponseEntity<>(service.updateRole(request), HttpStatus.OK);
         }catch (Exception e){
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

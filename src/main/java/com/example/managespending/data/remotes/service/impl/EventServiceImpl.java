@@ -123,7 +123,7 @@ public class EventServiceImpl extends BaseService<BaseDTO> implements EventServi
     }
 
     @Override
-    public ResponseDTO<BaseDTO> update(BaseDTO baseDTO) {
+    public ResponseDTO<BaseDTO> update(BaseDTO baseDTO){
 
         try{
 
@@ -322,5 +322,49 @@ public class EventServiceImpl extends BaseService<BaseDTO> implements EventServi
                     .build();
         }
 
+    }
+
+    @Override
+    public ResponseDTO<BaseDTO> getByStatus(BaseDTO baseDTO) {
+        try{
+            if(((EventDTO)baseDTO).getEventStatus()==null){
+                return ResponseDTO.<BaseDTO>builder()
+                        .message("Please enter the event_status !!!")
+                        .statusCode(ResponseCode.RESPONSE_ERROR_SERVER_ERROR)
+                        .createdTime(LocalDateTime.now())
+                        .build();
+            }else if(((EventDTO)baseDTO).getAccount().getAccountUsername()==null){
+                return ResponseDTO.<BaseDTO>builder()
+                        .message("Please enter the account_username !!!")
+                        .statusCode(ResponseCode.RESPONSE_ERROR_SERVER_ERROR)
+                        .createdTime(LocalDateTime.now())
+                        .build();
+            }else{
+                Account account = accountRepository.findAccountByAccountUsername(((EventDTO)baseDTO).getAccount().getAccountUsername());
+                if(account==null){
+                    return ResponseDTO.<BaseDTO>builder()
+                            .message("The account doesn't exist !!!")
+                            .statusCode(ResponseCode.RESPONSE_ERROR_SERVER_ERROR)
+                            .createdTime(LocalDateTime.now())
+                            .build();
+                }else{
+                    List<Event> listEvent = eventRepository.findEventsByAccountAndEventStatus(account, ((EventDTO)baseDTO).getEventStatus());
+
+                    return ResponseDTO.<BaseDTO>builder()
+                            .message("Get events complete !!!")
+                            .statusCode(ResponseCode.RESPONSE_OK_CODE)
+                            .objectList(mapper.mapToDTOList(listEvent, EventDTO.class))
+                            .createdTime(LocalDateTime.now())
+                            .build();
+                }
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResponseDTO.<BaseDTO>builder()
+                    .message("Get events fail !!!")
+                    .statusCode(ResponseCode.RESPONSE_ERROR_SERVER_ERROR)
+                    .createdTime(LocalDateTime.now())
+                    .build();
+        }
     }
 }

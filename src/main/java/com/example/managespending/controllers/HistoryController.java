@@ -5,6 +5,9 @@ import com.example.managespending.data.models.dto.HistoryDTO;
 import com.example.managespending.data.models.dto.base.BaseDTO;
 import com.example.managespending.data.models.dto.base.ResponseDTO;
 import com.example.managespending.data.models.dto.request.GetTotalExpenseDTO;
+import com.example.managespending.data.models.dto.request.GetTransactionListByDayDTO;
+import com.example.managespending.data.models.dto.request.GetTransactionListByMonthDTO;
+import com.example.managespending.data.models.dto.request.GetTransactionListByWeekDTO;
 import com.example.managespending.data.remotes.service.HistoryService;
 import com.example.managespending.utils.ApiPaths;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,5 +95,38 @@ public class HistoryController {
         }
 
     }
+
+
+    @GetMapping(value = ApiPaths.HISTORY_GET_LIST_BY_WEEK)
+    public ResponseEntity<ResponseDTO<BaseDTO>> getListByWeek(@RequestBody GetTransactionListByWeekDTO request){
+        try{
+            return new ResponseEntity<>(service.getTransactionByWeek(request), HttpStatus.OK);
+        }catch (Exception e){
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping(value = ApiPaths.HISTORY_GET_LIST_BY_MONTH)
+    public ResponseEntity<ResponseDTO<BaseDTO>> getListByMonth(@RequestBody GetTransactionListByMonthDTO request){
+        try{
+            return new ResponseEntity<>(service.getTransactionByMonth(request), HttpStatus.OK);
+        }catch (Exception e){
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping(value = ApiPaths.HISTORY_GET_LIST_BY_DAY)
+    public ResponseEntity<ResponseDTO<BaseDTO>> getListByDay(@RequestBody GetTransactionListByDayDTO request){
+        try{
+            return new ResponseEntity<>(service.getTransactionByDay(request), HttpStatus.OK);
+        }catch (Exception e){
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+
 
 }

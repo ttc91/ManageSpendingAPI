@@ -9,6 +9,7 @@ import com.example.managespending.utils.ApiPaths;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.ValidationAnnotationUtils;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -21,11 +22,11 @@ public class BudgetController {
     BudgetService service;
 
     @PostMapping(value = ApiPaths.MODEL_CREATE_DOMAIN)
-    public ResponseEntity<ResponseDTO<BaseDTO>> create (@RequestBody BudgetDTO request) {
+    public ResponseEntity<ResponseDTO<BaseDTO>> create(@RequestBody BudgetDTO request) {
 
-        try{
+        try {
             return new ResponseEntity<>(service.create(request), HttpStatus.CREATED);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -33,52 +34,59 @@ public class BudgetController {
     }
 
     @PutMapping(value = ApiPaths.MODEL_UPDATE_DOMAIN)
-    public ResponseEntity<ResponseDTO<BaseDTO>> update (@RequestBody BudgetDTO request) {
+    public ResponseEntity<ResponseDTO<BaseDTO>> update(@RequestBody BudgetDTO request) {
 
-        try{
+        try {
             System.out.println(request.toString());
             return new ResponseEntity<>(service.update(request), HttpStatus.OK);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-
     }
 
     @DeleteMapping(value = ApiPaths.MODEL_DELETE_DOMAIN)
-    public ResponseEntity<ResponseDTO<BaseDTO>> delete (@RequestBody BudgetDTO request) {
+    public ResponseEntity<ResponseDTO<BaseDTO>> delete(@RequestBody BudgetDTO request) {
 
-        try{
+        try {
             return new ResponseEntity<>(service.delete(request), HttpStatus.OK);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-
     }
 
     @GetMapping(value = ApiPaths.MODEL_GET_ONE_DOMAIN)
-    public ResponseEntity<ResponseDTO<BaseDTO>> getOne (@RequestBody BudgetDTO request) {
+    public ResponseEntity<ResponseDTO<BaseDTO>> getOne(@RequestBody BudgetDTO request) {
 
-        try{
+        try {
             return new ResponseEntity<>(service.getOne(request), HttpStatus.OK);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-
     }
 
     @GetMapping(value = ApiPaths.MODEL_GET_LIST_DOMAIN)
-    public ResponseEntity<ResponseDTO<BaseDTO>> getAll (@RequestBody AccountDTO request) {
+    public ResponseEntity<ResponseDTO<BaseDTO>> getAll(@RequestBody AccountDTO request) {
 
-        try{
+        try {
             return new ResponseEntity<>(service.getAll(request), HttpStatus.OK);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+    }
 
+
+    @GetMapping(value = ApiPaths.MODEL_GET_LIST_BY_STATUS)
+    public ResponseEntity<ResponseDTO<BaseDTO>> getByStatus(@RequestBody BudgetDTO request) {
+        try {
+            return new ResponseEntity<>(service.getByStatus(request), HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
 }

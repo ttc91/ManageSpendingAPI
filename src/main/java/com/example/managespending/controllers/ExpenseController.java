@@ -22,7 +22,6 @@ public class ExpenseController {
 
     @PostMapping(value = ApiPaths.MODEL_CREATE_DOMAIN)
     public ResponseEntity<ResponseDTO<BaseDTO>> create (@RequestBody ExpenseDTO request) {
-
         try{
             return new ResponseEntity<>(service.create(request), HttpStatus.CREATED);
         }catch (Exception e){

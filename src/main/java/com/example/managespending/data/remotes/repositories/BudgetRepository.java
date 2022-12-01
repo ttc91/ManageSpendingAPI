@@ -14,5 +14,6 @@ public interface BudgetRepository extends JpaRepository<Budget, Long> {
     Budget findBudgetByAccountAndBudgetName(Account account, String budgetName);
     List<Budget> findAllByAccount(Account account);
     Budget findBudgetByAccountAndExpense(Account account, Expense expense);
+    List<Budget> findBudgetsByAccountAndBudgetStatus(Account account, boolean budgetStatus);
 
 }

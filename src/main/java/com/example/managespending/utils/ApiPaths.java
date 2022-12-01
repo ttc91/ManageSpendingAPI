@@ -31,5 +31,7 @@ public interface ApiPaths {
     String HISTORY_GET_LIST_BY_WITHDRAW_PIE_CHART = "/get_list_by_withdraw_pie";
     String HISTORY_GET_LIST_BY_RECHARGE_PIE_CHART = "/get_list_by_recharge_pie";
     String HISTORY_GET_LIST_BY_WITHDRAW_BAR_CHART = "/get_list_by_withdraw_bar";
-
+    String HISTORY_GET_LIST_BY_WEEK = "/get_list_by_week";
+    String HISTORY_GET_LIST_BY_MONTH =  "/get_list_by_month";
+    String HISTORY_GET_LIST_BY_DAY =  "/get_list_by_day";
 }

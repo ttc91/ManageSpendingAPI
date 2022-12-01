@@ -9,6 +9,7 @@ import com.example.managespending.data.models.dto.request.GetTotalExpenseDTO;
 import com.example.managespending.data.models.dto.request.GetTransactionListByDayDTO;
 import com.example.managespending.data.models.dto.request.GetTransactionListByMonthDTO;
 import com.example.managespending.data.models.dto.request.GetTransactionListByWeekDTO;
+import com.example.managespending.data.models.dto.response.ListDaysHaveTransactionsInMonthDTO;
 import com.example.managespending.data.models.dto.response.PieItemDTO;
 import com.example.managespending.data.models.entities.*;
 import com.example.managespending.data.remotes.repositories.*;
@@ -25,6 +26,7 @@ import javax.persistence.Tuple;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -688,6 +690,57 @@ public class HistoryServiceImpl extends BaseService<BaseDTO> implements HistoryS
             e.printStackTrace();
             return ResponseDTO.<BaseDTO>builder()
                     .message("Get histories fail !!!")
+                    .statusCode(ResponseCode.RESPONSE_ERROR_SERVER_ERROR)
+                    .createdTime(LocalDateTime.now())
+                    .build();
+        }
+    }
+
+    @Override
+    public ResponseDTO<BaseDTO> getListDaysHaveTransaction(BaseDTO baseDTO) {
+        try {
+
+            if (((GetTransactionListByMonthDTO) baseDTO).getAccountUsername() == "") {
+                return ResponseDTO.<BaseDTO>builder()
+                        .message("Please enter the account_username !!!")
+                        .statusCode(ResponseCode.RESPONSE_ERROR_SERVER_ERROR)
+                        .createdTime(LocalDateTime.now())
+                        .build();
+            } else if (((GetTransactionListByMonthDTO) baseDTO).getMonth() == "" ) {
+                return ResponseDTO.<BaseDTO>builder()
+                        .message("Please enter month !!!")
+                        .statusCode(ResponseCode.RESPONSE_ERROR_SERVER_ERROR)
+                        .createdTime(LocalDateTime.now())
+                        .build();
+            } else {
+                Account account = accountRepository.findAccountByAccountUsername(((GetTransactionListByMonthDTO) baseDTO).getAccountUsername());
+                if (account == null) {
+                    return ResponseDTO.<BaseDTO>builder()
+                            .message("The account doesn't exist !!!")
+                            .statusCode(ResponseCode.RESPONSE_BAD_REQUEST)
+                            .createdTime(LocalDateTime.now())
+                            .build();
+                } else {
+
+                    List<Tuple> listItems = historyRepository.getListDaysHaveTransactionsInMonth(account.getAccountId(), ((GetTransactionListByMonthDTO) baseDTO).getMonth(),HistoryAction.WITHDRAW.name(), HistoryAction.RECHARGE.name());
+
+                    List<ListDaysHaveTransactionsInMonthDTO> listDays = listItems.stream().map(
+                            p -> new ListDaysHaveTransactionsInMonthDTO(p.get("history_noted_date", Date.class).toString())
+                    ).collect(Collectors.toList());
+
+
+                    return ResponseDTO.<BaseDTO>builder()
+                            .message("Get transactions complete!!!")
+                            .statusCode(ResponseCode.RESPONSE_OK_CODE)
+                            .objectList(listDays)
+                            .createdTime(LocalDateTime.now())
+                            .build();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseDTO.<BaseDTO>builder()
+                    .message("Get transactions fail !!!")
                     .statusCode(ResponseCode.RESPONSE_ERROR_SERVER_ERROR)
                     .createdTime(LocalDateTime.now())
                     .build();

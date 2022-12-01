@@ -127,6 +127,16 @@ public class HistoryController {
         }
     }
 
+    @GetMapping(value = ApiPaths.HISTORY_GET_LIST_DAY_IN_MONTH)
+    public ResponseEntity<ResponseDTO<BaseDTO>> getListDayInMonth(@RequestBody GetTransactionListByMonthDTO request){
+        try{
+            return new ResponseEntity<>(service.getListDaysHaveTransaction(request), HttpStatus.OK);
+        }catch (Exception e){
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
 
 
 }

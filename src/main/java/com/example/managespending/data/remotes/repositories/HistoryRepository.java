@@ -40,8 +40,9 @@ public interface HistoryRepository extends JpaRepository<History, Long> {
 
 
     @Query(value = "SELECT history.* " +
-            "FROM history INNER JOIN expense ON history.history_id = expense.expense_id " +
+            "FROM history INNER JOIN expense ON history.expense_id = expense.expense_id " +
             "WHERE history.account_id = :accountId AND " +
+//            "to_char(history.history_noted_date,'yyyy-MM') LIKE CONCAT(:month,'%') "+
             "to_char(history.history_noted_date,'yyyy-MM') LIKE %:month% AND history.history_action = :historyAction1 OR " +
             "to_char(history.history_noted_date,'yyyy-MM') LIKE %:month% AND history.history_action= :historyAction2 " +
             "ORDER BY history.* ",nativeQuery = true)
@@ -49,10 +50,21 @@ public interface HistoryRepository extends JpaRepository<History, Long> {
 
 
     @Query(value = "SELECT history.* " +
-            "FROM history INNER JOIN expense ON history.history_id = expense.expense_id " +
+            "FROM history INNER JOIN expense ON history.expense_id = expense.expense_id " +
             "WHERE history.account_id = :accountId AND " +
             "to_char(history.history_noted_date,'yyyy-MM-dd') = :day AND history.history_action = :historyAction1 OR " +
             "to_char(history.history_noted_date,'yyyy-MM-dd') = :day AND history.history_action= :historyAction2 " +
             "ORDER BY history.* ",nativeQuery = true)
     List<History> getTransactionListByDay(@Param("accountId") Long accountId, @Param("day") String day, @Param("historyAction1") String historyAction1, @Param("historyAction2") String historyAction2);
+
+
+
+    @Query(value = "SELECT history.history_noted_date " +
+            "FROM history INNER JOIN expense ON history.expense_id = expense.expense_id " +
+            "WHERE history.account_id = :accountId AND " +
+            "to_char(history.history_noted_date,'yyyy-MM') LIKE %:month% AND history.history_action = :historyAction1 OR " +
+            "to_char(history.history_noted_date,'yyyy-MM') LIKE %:month% AND history.history_action= :historyAction2 " +
+            "GROUP BY history.history_noted_date ",nativeQuery = true)
+    List<Tuple> getListDaysHaveTransactionsInMonth(@Param("accountId") Long accountId, @Param("month") String month, @Param("historyAction1") String historyAction1, @Param("historyAction2") String historyAction2);
+
 }

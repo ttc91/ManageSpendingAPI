@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import javax.persistence.Tuple;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -71,6 +72,16 @@ class ManagespendingApplicationTests {
         List<History> listItems = historyRepo.getTransactionListByWeek(1L,startDate, endDate, HistoryAction.WITHDRAW.name(),HistoryAction.RECHARGE.name());
         List<History> listItems_2 = historyRepo.getTransactionListByMonth(1L, "2022-12",HistoryAction.WITHDRAW.name(),HistoryAction.RECHARGE.name());
         List<History> listItems_3= historyRepo.getTransactionListByDay(1L, "2022-12-01",HistoryAction.WITHDRAW.name(),HistoryAction.RECHARGE.name());
+        List<Tuple> listItems_4 = historyRepo.getListDaysHaveTransactionsInMonth(1L, "2022-12",HistoryAction.WITHDRAW.name(),HistoryAction.RECHARGE.name());
+
+//        if(listItems_4.isEmpty()==false){
+//            for(Tuple item : listItems_4){
+//                System.out.println("Date is :" + item.get("history_noted_date", Date.class).toString());
+//            }
+//        }else{
+//            System.out.print("Fail !");
+//        }
+
 
 
         if(listItems_2.isEmpty()==false){

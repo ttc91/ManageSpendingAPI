@@ -45,7 +45,7 @@ class ManagespendingApplicationTests {
 
         List<Event> eve = eventRepo.findEventsByAccountAndEventStatus(acc, false);
 
-        List<Budget> budget = budgetRepo.findBudgetsByAccountAndBudgetStatus(acc, false);
+        List<Budget> budget = budgetRepo.findBudgetsByAccountAndBudgetExpired(acc, false);
 
         List<Expense> listExpense = expenseRepo.findAllByAccount(acc);
         List<Expense> listExpense2 = expenseRepo.findAllByIsExpenseSystem(false);

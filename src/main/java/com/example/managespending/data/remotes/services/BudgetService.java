@@ -14,5 +14,5 @@ public interface BudgetService {
 
     ResponseDTO<BaseDTO> getAll(BaseDTO baseDTO);
 
-    ResponseDTO<BaseDTO> getByStatus(BaseDTO baseDTO);
+    ResponseDTO<BaseDTO> getByExpiredStatus(BaseDTO baseDTO);
 }

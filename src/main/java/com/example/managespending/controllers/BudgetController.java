@@ -82,7 +82,7 @@ public class BudgetController {
     @GetMapping(value = ApiPaths.MODEL_GET_LIST_BY_STATUS)
     public ResponseEntity<ResponseDTO<BaseDTO>> getByStatus(@RequestBody BudgetDTO request) {
         try {
-            return new ResponseEntity<>(service.getByStatus(request), HttpStatus.OK);
+            return new ResponseEntity<>(service.getByExpiredStatus(request), HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

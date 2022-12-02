@@ -169,6 +169,7 @@ public class EventServiceImpl extends BaseService<BaseDTO> implements EventServi
             event.setEventIcon(((EventDTO) baseDTO).getEventIcon());
             event.setEventName(((EventDTO) baseDTO).getEventName());
             event.setEventEndDate(((EventDTO) baseDTO).getEventEndDate());
+            event.setEventStatus(((EventDTO)baseDTO).getEventStatus());
 
             if(((EventDTO) baseDTO).getWallet() != null){
 

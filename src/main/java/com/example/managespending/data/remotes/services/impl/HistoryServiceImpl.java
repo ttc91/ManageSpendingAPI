@@ -6,6 +6,10 @@ import com.example.managespending.data.models.dto.HistoryDTO;
 import com.example.managespending.data.models.dto.base.BaseDTO;
 import com.example.managespending.data.models.dto.base.ResponseDTO;
 import com.example.managespending.data.models.dto.request.GetTotalExpenseDTO;
+import com.example.managespending.data.models.dto.request.GetTransactionListByDayDTO;
+import com.example.managespending.data.models.dto.request.GetTransactionListByMonthDTO;
+import com.example.managespending.data.models.dto.request.GetTransactionListByWeekDTO;
+import com.example.managespending.data.models.dto.response.ListDaysHaveTransactionsInMonthDTO;
 import com.example.managespending.data.models.dto.response.PieItemDTO;
 import com.example.managespending.data.models.entities.*;
 import com.example.managespending.data.remotes.repositories.*;
@@ -20,7 +24,9 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.Tuple;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -52,15 +58,15 @@ public class HistoryServiceImpl extends BaseService<BaseDTO> implements HistoryS
     @Override
     public ResponseDTO<BaseDTO> create(BaseDTO baseDTO) {
 
-        try{
+        try {
 
-            if(
+            if (
                     ((HistoryDTO) baseDTO).getAccountUsername() == null ||
-                    ((HistoryDTO) baseDTO).getAccountUsername().length() == 0 ||
-                    ((HistoryDTO) baseDTO).getWalletId() == null ||
-                    ((HistoryDTO) baseDTO).getExpenseId() == null ||
-                    ((HistoryDTO) baseDTO).getHistoryCost().compareTo(BigDecimal.ZERO) <= 0 ||
-                    ((HistoryDTO) baseDTO).getHistoryCost() == null
+                            ((HistoryDTO) baseDTO).getAccountUsername().length() == 0 ||
+                            ((HistoryDTO) baseDTO).getWalletId() == null ||
+                            ((HistoryDTO) baseDTO).getExpense() == null ||
+                            ((HistoryDTO) baseDTO).getHistoryCost().compareTo(BigDecimal.ZERO) <= 0 ||
+                            ((HistoryDTO) baseDTO).getHistoryCost() == null
             ) {
 
                 return ResponseDTO.<BaseDTO>builder()
@@ -74,7 +80,7 @@ public class HistoryServiceImpl extends BaseService<BaseDTO> implements HistoryS
             Account account = accountRepository.findAccountByAccountUsername(((HistoryDTO) baseDTO).getAccountUsername());
             History history = mapper.mapToEntity((HistoryDTO) baseDTO, History.class);
 
-            if(account == null){
+            if (account == null) {
 
                 return ResponseDTO.<BaseDTO>builder()
                         .message("Account is not exist !")
@@ -86,7 +92,7 @@ public class HistoryServiceImpl extends BaseService<BaseDTO> implements HistoryS
 
             Optional<Wallet> walletOpt = walletRepository.findById(((HistoryDTO) baseDTO).getWalletId());
 
-            if(!walletOpt.isPresent()){
+            if (!walletOpt.isPresent()) {
 
                 return ResponseDTO.<BaseDTO>builder()
                         .message("Wallet is not exist !")
@@ -96,7 +102,7 @@ public class HistoryServiceImpl extends BaseService<BaseDTO> implements HistoryS
 
             }
 
-            if(((HistoryDTO) baseDTO).getHistoryCost().compareTo(walletOpt.get().getWalletBalance()) > 0){
+            if (((HistoryDTO) baseDTO).getHistoryCost().compareTo(walletOpt.get().getWalletBalance()) > 0) {
 
                 return ResponseDTO.<BaseDTO>builder()
                         .message("Wallet is not have enough money !")
@@ -106,9 +112,9 @@ public class HistoryServiceImpl extends BaseService<BaseDTO> implements HistoryS
 
             }
 
-            Optional<Expense> expenseOpt = expenseRepository.findById(((HistoryDTO) baseDTO).getExpenseId());
+            Optional<Expense> expenseOpt = expenseRepository.findById(((HistoryDTO) baseDTO).getExpense().getExpenseId());
 
-            if(!expenseOpt.isPresent()){
+            if (!expenseOpt.isPresent()) {
 
                 return ResponseDTO.<BaseDTO>builder()
                         .message("Expense is not exist !")
@@ -118,31 +124,29 @@ public class HistoryServiceImpl extends BaseService<BaseDTO> implements HistoryS
 
             }
 
-            if(expenseOpt.get().getExpenseType().equals(ExpenseType.DISBURSE)){
+            if (expenseOpt.get().getExpenseType().equals(ExpenseType.DISBURSE)) {
 
                 walletOpt.get().setWalletBalance(walletOpt.get().getWalletBalance().subtract(((HistoryDTO) baseDTO).getHistoryCost()));
                 walletRepository.save(walletOpt.get());
 
                 Budget budget = budgetRepository.findBudgetByAccountAndExpense(account, expenseOpt.get());
 
-                if(budget == null){
+                if (budget != null) {
 
-                    return ResponseDTO.<BaseDTO>builder()
-                            .message("Budget object is not exist !")
-                            .statusCode(ResponseCode.RESPONSE_ERROR_SERVER_ERROR)
-                            .createdTime(LocalDateTime.now())
-                            .build();
+//                    return ResponseDTO.<BaseDTO>builder()
+//                            .message("Budget object is not exist !")
+//                            .statusCode(ResponseCode.RESPONSE_ERROR_SERVER_ERROR)
+//                            .createdTime(LocalDateTime.now())
+//                            .build();
+                    budget.setBudgetPresentValue(budget.getBudgetPresentValue().add(((HistoryDTO) baseDTO).getHistoryCost()));
+                    budgetRepository.save(budget);
 
+                    history.setBudget(budget);
                 }
 
-                budget.setBudgetPresentValue(budget.getBudgetPresentValue().add(((HistoryDTO) baseDTO).getHistoryCost()));
-                budgetRepository.save(budget);
+            } else {
 
-                history.setBudget(budget);
-
-            }else{
-
-                if (((HistoryDTO) baseDTO).getHistoryCost().compareTo(BigDecimal.ZERO) < 0){
+                if (((HistoryDTO) baseDTO).getHistoryCost().compareTo(BigDecimal.ZERO) < 0) {
 
                     return ResponseDTO.<BaseDTO>builder()
                             .message("Please input cost greater than 0 !")
@@ -157,11 +161,11 @@ public class HistoryServiceImpl extends BaseService<BaseDTO> implements HistoryS
 
             }
 
-            if(((HistoryDTO) baseDTO).getEventId() != null && expenseOpt.get().getExpenseType().compareTo(ExpenseType.DISBURSE) == 0){
+            if (((HistoryDTO) baseDTO).getEventId() != null && expenseOpt.get().getExpenseType().compareTo(ExpenseType.DISBURSE) == 0) {
 
                 Optional<Event> eventOpt = eventRepository.findById(((HistoryDTO) baseDTO).getEventId());
 
-                if(!eventOpt.isPresent()){
+                if (!eventOpt.isPresent()) {
 
                     return ResponseDTO.<BaseDTO>builder()
                             .message("Event object is not exist !")
@@ -169,7 +173,7 @@ public class HistoryServiceImpl extends BaseService<BaseDTO> implements HistoryS
                             .createdTime(LocalDateTime.now())
                             .build();
 
-                }else if (eventOpt.get().getWallet() != null && eventOpt.get().getWallet() != walletOpt.get()){
+                } else if (eventOpt.get().getWallet() != null && eventOpt.get().getWallet() != walletOpt.get()) {
 
                     return ResponseDTO.<BaseDTO>builder()
                             .message("Wallet is not correct !")
@@ -177,7 +181,7 @@ public class HistoryServiceImpl extends BaseService<BaseDTO> implements HistoryS
                             .createdTime(LocalDateTime.now())
                             .build();
 
-                }else {
+                } else {
                     history.setEvent(eventOpt.get());
                 }
 
@@ -203,7 +207,7 @@ public class HistoryServiceImpl extends BaseService<BaseDTO> implements HistoryS
                     .createdTime(LocalDateTime.now())
                     .build();
 
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return ResponseDTO.<BaseDTO>builder()
                     .message("Create history fail !")
@@ -217,11 +221,11 @@ public class HistoryServiceImpl extends BaseService<BaseDTO> implements HistoryS
     @Override
     public ResponseDTO<BaseDTO> delete(BaseDTO baseDTO) {
 
-        try{
+        try {
 
             Optional<History> historyOpt = historyRepository.findById(((HistoryDTO) baseDTO).getHistoryId());
 
-            if(!historyOpt.isPresent()) {
+            if (!historyOpt.isPresent()) {
 
                 return ResponseDTO.<BaseDTO>builder()
                         .message("History is not exist !")
@@ -231,14 +235,14 @@ public class HistoryServiceImpl extends BaseService<BaseDTO> implements HistoryS
 
             }
 
-            if(historyOpt.get().getBudget() != null){
+            if (historyOpt.get().getBudget() != null) {
 
                 historyOpt.get().getWallet().setWalletBalance(historyOpt.get().getWallet().getWalletBalance().add(historyOpt.get().getHistoryCost()));
                 walletRepository.save(historyOpt.get().getWallet());
                 historyOpt.get().getBudget().setBudgetPresentValue(historyOpt.get().getBudget().getBudgetPresentValue().subtract(historyOpt.get().getHistoryCost()));
                 budgetRepository.save(historyOpt.get().getBudget());
 
-            }else {
+            } else {
 
                 historyOpt.get().getWallet().setWalletBalance(historyOpt.get().getWallet().getWalletBalance().subtract(historyOpt.get().getHistoryCost()));
                 walletRepository.save(historyOpt.get().getWallet());
@@ -253,7 +257,7 @@ public class HistoryServiceImpl extends BaseService<BaseDTO> implements HistoryS
                     .createdTime(LocalDateTime.now())
                     .build();
 
-        }catch (Exception e){
+        } catch (Exception e) {
 
             e.printStackTrace();
             return ResponseDTO.<BaseDTO>builder()
@@ -269,15 +273,15 @@ public class HistoryServiceImpl extends BaseService<BaseDTO> implements HistoryS
     @Override
     public ResponseDTO<BaseDTO> update(BaseDTO baseDTO) {
 
-        try{
+        try {
 
-            if(
+            if (
                     ((HistoryDTO) baseDTO).getAccountUsername() == null ||
                             ((HistoryDTO) baseDTO).getAccountUsername().length() == 0 ||
                             ((HistoryDTO) baseDTO).getWalletId() == null ||
-                            ((HistoryDTO) baseDTO).getExpenseId() == null ||
+                            ((HistoryDTO) baseDTO).getExpense().getExpenseId() == null ||
                             ((HistoryDTO) baseDTO).getHistoryCost().compareTo(BigDecimal.ZERO) <= 0 ||
-                            ((HistoryDTO) baseDTO).getHistoryCost() == null  ||
+                            ((HistoryDTO) baseDTO).getHistoryCost() == null ||
                             ((HistoryDTO) baseDTO).getHistoryId() == null
             ) {
 
@@ -292,7 +296,7 @@ public class HistoryServiceImpl extends BaseService<BaseDTO> implements HistoryS
             Account account = accountRepository.findAccountByAccountUsername(((HistoryDTO) baseDTO).getAccountUsername());
             Optional<History> historyOpt = historyRepository.findById(((HistoryDTO) baseDTO).getHistoryId());
 
-            if(!historyOpt.isPresent()) {
+            if (!historyOpt.isPresent()) {
 
                 return ResponseDTO.<BaseDTO>builder()
                         .message("History is not exist !")
@@ -302,7 +306,7 @@ public class HistoryServiceImpl extends BaseService<BaseDTO> implements HistoryS
 
             }
 
-            if(account == null){
+            if (account == null) {
 
                 return ResponseDTO.<BaseDTO>builder()
                         .message("Account is not exist !")
@@ -314,7 +318,7 @@ public class HistoryServiceImpl extends BaseService<BaseDTO> implements HistoryS
 
             Optional<Wallet> walletOpt = walletRepository.findById(((HistoryDTO) baseDTO).getWalletId());
 
-            if(!walletOpt.isPresent()){
+            if (!walletOpt.isPresent()) {
 
                 return ResponseDTO.<BaseDTO>builder()
                         .message("Wallet is not exist !")
@@ -324,9 +328,9 @@ public class HistoryServiceImpl extends BaseService<BaseDTO> implements HistoryS
 
             }
 
-            Optional<Expense> expenseOpt = expenseRepository.findById(((HistoryDTO) baseDTO).getExpenseId());
+            Optional<Expense> expenseOpt = expenseRepository.findById(((HistoryDTO) baseDTO).getExpense().getExpenseId());
 
-            if(!expenseOpt.isPresent()){
+            if (!expenseOpt.isPresent()) {
 
                 return ResponseDTO.<BaseDTO>builder()
                         .message("Expense is not exist !")
@@ -336,11 +340,12 @@ public class HistoryServiceImpl extends BaseService<BaseDTO> implements HistoryS
 
             }
 
-            if(((HistoryDTO) baseDTO).getEventId() != null && expenseOpt.get().getExpenseType().compareTo(ExpenseType.DISBURSE) == 0){
+
+            if (((HistoryDTO) baseDTO).getEventId() != null && expenseOpt.get().getExpenseType().compareTo(ExpenseType.DISBURSE) == 0) {
 
                 Optional<Event> eventOpt = eventRepository.findById(((HistoryDTO) baseDTO).getEventId());
 
-                if(!eventOpt.isPresent()){
+                if (!eventOpt.isPresent()) {
 
                     return ResponseDTO.<BaseDTO>builder()
                             .message("Event object is not exist !")
@@ -348,7 +353,7 @@ public class HistoryServiceImpl extends BaseService<BaseDTO> implements HistoryS
                             .createdTime(LocalDateTime.now())
                             .build();
 
-                }else if (eventOpt.get().getWallet() != null && eventOpt.get().getWallet() != walletOpt.get()){
+                } else if (eventOpt.get().getWallet() != null && eventOpt.get().getWallet() != walletOpt.get()) {
 
                     return ResponseDTO.<BaseDTO>builder()
                             .message("Wallet is not correct !")
@@ -356,31 +361,31 @@ public class HistoryServiceImpl extends BaseService<BaseDTO> implements HistoryS
                             .createdTime(LocalDateTime.now())
                             .build();
 
-                }else {
+                } else {
                     historyOpt.get().setEvent(eventOpt.get());
                 }
 
-            }else {
+            } else {
                 historyOpt.get().setEvent(null);
             }
 
-            if(historyOpt.get().getBudget() != null){
+            if (historyOpt.get().getBudget() != null) {
 
                 historyOpt.get().getWallet().setWalletBalance(historyOpt.get().getWallet().getWalletBalance().add(historyOpt.get().getHistoryCost()));
                 walletRepository.save(historyOpt.get().getWallet());
                 historyOpt.get().getBudget().setBudgetPresentValue(historyOpt.get().getBudget().getBudgetPresentValue().subtract(historyOpt.get().getHistoryCost()));
                 budgetRepository.save(historyOpt.get().getBudget());
 
-            }else {
+            } else {
 
                 historyOpt.get().getWallet().setWalletBalance(historyOpt.get().getWallet().getWalletBalance().subtract(historyOpt.get().getHistoryCost()));
                 walletRepository.save(historyOpt.get().getWallet());
 
             }
 
-            if(expenseOpt.get().getExpenseType().equals(ExpenseType.DISBURSE)){
+            if (expenseOpt.get().getExpenseType().equals(ExpenseType.DISBURSE)) {
 
-                if(((HistoryDTO) baseDTO).getHistoryCost().compareTo(walletOpt.get().getWalletBalance().add(historyOpt.get().getHistoryCost())) > 0){
+                if (((HistoryDTO) baseDTO).getHistoryCost().compareTo(walletOpt.get().getWalletBalance().add(historyOpt.get().getHistoryCost())) > 0) {
 
                     return ResponseDTO.<BaseDTO>builder()
                             .message("Wallet is not have enough money !")
@@ -395,7 +400,7 @@ public class HistoryServiceImpl extends BaseService<BaseDTO> implements HistoryS
 
                 Budget budget = budgetRepository.findBudgetByAccountAndExpense(account, expenseOpt.get());
 
-                if(budget == null){
+                if (budget == null) {
 
                     return ResponseDTO.<BaseDTO>builder()
                             .message("Budget object is not exist !")
@@ -410,9 +415,9 @@ public class HistoryServiceImpl extends BaseService<BaseDTO> implements HistoryS
 
                 historyOpt.get().setBudget(budget);
 
-            }else{
+            } else {
 
-                if (((HistoryDTO) baseDTO).getHistoryCost().compareTo(BigDecimal.ZERO) < 0){
+                if (((HistoryDTO) baseDTO).getHistoryCost().compareTo(BigDecimal.ZERO) < 0) {
 
                     return ResponseDTO.<BaseDTO>builder()
                             .message("Please input cost greater than 0 !")
@@ -452,7 +457,7 @@ public class HistoryServiceImpl extends BaseService<BaseDTO> implements HistoryS
                     .createdTime(LocalDateTime.now())
                     .build();
 
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return ResponseDTO.<BaseDTO>builder()
                     .message("Update history fail !")
@@ -466,7 +471,7 @@ public class HistoryServiceImpl extends BaseService<BaseDTO> implements HistoryS
     @Override
     public ResponseDTO<BaseDTO> getAllByWithdrawPieChart(BaseDTO baseDTO) {
 
-        try{
+        try {
 
             Account account = accountRepository.findAccountByAccountUsername(((GetTotalExpenseDTO) baseDTO).getAccountUsername());
             List<Tuple> pieChartTuple = historyRepository.getTransactionListByAccountAndHistoryAction(account.getAccountId(), HistoryAction.WITHDRAW.toString(), ((GetTotalExpenseDTO) baseDTO).getDate(), ((GetTotalExpenseDTO) baseDTO).getGetDateType().value);
@@ -482,7 +487,7 @@ public class HistoryServiceImpl extends BaseService<BaseDTO> implements HistoryS
                     .createdTime(LocalDateTime.now())
                     .build();
 
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return ResponseDTO.<BaseDTO>builder()
                     .message("Get histories fail !!!")
@@ -496,14 +501,14 @@ public class HistoryServiceImpl extends BaseService<BaseDTO> implements HistoryS
     @Override
     public ResponseDTO<BaseDTO> getAllByRechargePieChart(BaseDTO baseDTO) {
 
-        try{
+        try {
 
             Account account = accountRepository.findAccountByAccountUsername(((GetTotalExpenseDTO) baseDTO).getAccountUsername());
 
             List<Tuple> pieChartTuple = historyRepository.getTransactionListByAccountAndHistoryAction(account.getAccountId(), HistoryAction.RECHARGE.toString(), ((GetTotalExpenseDTO) baseDTO).getDate(), ((GetTotalExpenseDTO) baseDTO).getGetDateType().value);
 
             List<PieItemDTO> pieChartList = pieChartTuple.stream().map(
-                 p -> new PieItemDTO(p.get("expense_name", String.class), p.get("total_cost", BigDecimal.class))
+                    p -> new PieItemDTO(p.get("expense_name", String.class), p.get("total_cost", BigDecimal.class))
             ).collect(Collectors.toList());
 
             return ResponseDTO.<BaseDTO>builder()
@@ -513,7 +518,7 @@ public class HistoryServiceImpl extends BaseService<BaseDTO> implements HistoryS
                     .createdTime(LocalDateTime.now())
                     .build();
 
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return ResponseDTO.<BaseDTO>builder()
                     .message("Get histories fail !!!")
@@ -527,7 +532,7 @@ public class HistoryServiceImpl extends BaseService<BaseDTO> implements HistoryS
     @Override
     public ResponseDTO<BaseDTO> getAllByWithdrawBarChart(BaseDTO baseDTO) {
 
-        try{
+        try {
 
             Account account = accountRepository.findAccountByAccountUsername(((AccountDTO) baseDTO).getAccountUsername());
             List<History> histories = historyRepository.findAllByAccountAndHistoryAction(account, HistoryAction.WITHDRAW);
@@ -539,7 +544,7 @@ public class HistoryServiceImpl extends BaseService<BaseDTO> implements HistoryS
                     .createdTime(LocalDateTime.now())
                     .build();
 
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return ResponseDTO.<BaseDTO>builder()
                     .message("Get histories fail !!!")
@@ -548,6 +553,198 @@ public class HistoryServiceImpl extends BaseService<BaseDTO> implements HistoryS
                     .build();
         }
 
+    }
+
+
+    @Override
+    public ResponseDTO<BaseDTO> getTransactionByWeek(BaseDTO baseDTO) {
+        try {
+
+            if (((GetTransactionListByWeekDTO) baseDTO).getAccountUsername() == "") {
+                return ResponseDTO.<BaseDTO>builder()
+                        .message("Please enter the account_username !!!")
+                        .statusCode(ResponseCode.RESPONSE_ERROR_SERVER_ERROR)
+                        .createdTime(LocalDateTime.now())
+                        .build();
+            } else if (((GetTransactionListByWeekDTO) baseDTO).getStartDate() == null || ((GetTransactionListByWeekDTO) baseDTO).getEndDate() == null) {
+                return ResponseDTO.<BaseDTO>builder()
+                        .message("Please enter the startDate and endDate !!!")
+                        .statusCode(ResponseCode.RESPONSE_ERROR_SERVER_ERROR)
+                        .createdTime(LocalDateTime.now())
+                        .build();
+            } else {
+                Account account = accountRepository.findAccountByAccountUsername(((GetTransactionListByWeekDTO) baseDTO).getAccountUsername());
+                if (account == null) {
+                    return ResponseDTO.<BaseDTO>builder()
+                            .message("The account doesn't exist !!!")
+                            .statusCode(ResponseCode.RESPONSE_BAD_REQUEST)
+                            .createdTime(LocalDateTime.now())
+                            .build();
+                } else {
+                    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+
+                    List<History> listItems = historyRepository.getTransactionListByWeek(account.getAccountId(), df.parse(((GetTransactionListByWeekDTO) baseDTO).getStartDate()), df.parse(((GetTransactionListByWeekDTO) baseDTO).getEndDate()),HistoryAction.WITHDRAW.name(), HistoryAction.RECHARGE.name());
+
+                    return ResponseDTO.<BaseDTO>builder()
+                            .message("Get transactions complete!!!")
+                            .statusCode(ResponseCode.RESPONSE_OK_CODE)
+                            .objectList(mapper.mapToDTOList(listItems, HistoryDTO.class))
+                            .createdTime(LocalDateTime.now())
+                            .build();
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseDTO.<BaseDTO>builder()
+                    .message("Get histories fail !!!")
+                    .statusCode(ResponseCode.RESPONSE_ERROR_SERVER_ERROR)
+                    .createdTime(LocalDateTime.now())
+                    .build();
+        }
+    }
+
+    @Override
+    public ResponseDTO<BaseDTO> getTransactionByMonth(BaseDTO baseDTO) {
+        try {
+
+            if (((GetTransactionListByMonthDTO) baseDTO).getAccountUsername() == "") {
+                return ResponseDTO.<BaseDTO>builder()
+                        .message("Please enter the account_username !!!")
+                        .statusCode(ResponseCode.RESPONSE_ERROR_SERVER_ERROR)
+                        .createdTime(LocalDateTime.now())
+                        .build();
+            } else if (((GetTransactionListByMonthDTO) baseDTO).getMonth() == "" ) {
+                return ResponseDTO.<BaseDTO>builder()
+                        .message("Please enter month !!!")
+                        .statusCode(ResponseCode.RESPONSE_ERROR_SERVER_ERROR)
+                        .createdTime(LocalDateTime.now())
+                        .build();
+            } else {
+                Account account = accountRepository.findAccountByAccountUsername(((GetTransactionListByMonthDTO) baseDTO).getAccountUsername());
+                if (account == null) {
+                    return ResponseDTO.<BaseDTO>builder()
+                            .message("The account doesn't exist !!!")
+                            .statusCode(ResponseCode.RESPONSE_BAD_REQUEST)
+                            .createdTime(LocalDateTime.now())
+                            .build();
+                } else {
+
+                    List<History> listItems = historyRepository.getTransactionListByMonth(account.getAccountId(), ((GetTransactionListByMonthDTO) baseDTO).getMonth(),HistoryAction.WITHDRAW.name(), HistoryAction.RECHARGE.name());
+
+                    return ResponseDTO.<BaseDTO>builder()
+                            .message("Get transactions complete!!!")
+                            .statusCode(ResponseCode.RESPONSE_OK_CODE)
+                            .objectList(mapper.mapToDTOList(listItems, HistoryDTO.class))
+                            .createdTime(LocalDateTime.now())
+                            .build();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseDTO.<BaseDTO>builder()
+                    .message("Get histories fail !!!")
+                    .statusCode(ResponseCode.RESPONSE_ERROR_SERVER_ERROR)
+                    .createdTime(LocalDateTime.now())
+                    .build();
+        }
+    }
+
+    @Override
+    public ResponseDTO<BaseDTO> getTransactionByDay(BaseDTO baseDTO) {
+        try {
+
+            if (((GetTransactionListByDayDTO) baseDTO).getAccountUsername() == "") {
+                return ResponseDTO.<BaseDTO>builder()
+                        .message("Please enter the account_username !!!")
+                        .statusCode(ResponseCode.RESPONSE_ERROR_SERVER_ERROR)
+                        .createdTime(LocalDateTime.now())
+                        .build();
+            } else if (((GetTransactionListByDayDTO) baseDTO).getDay() == "" ) {
+                return ResponseDTO.<BaseDTO>builder()
+                        .message("Please enter month !!!")
+                        .statusCode(ResponseCode.RESPONSE_ERROR_SERVER_ERROR)
+                        .createdTime(LocalDateTime.now())
+                        .build();
+            } else {
+                Account account = accountRepository.findAccountByAccountUsername(((GetTransactionListByDayDTO) baseDTO).getAccountUsername());
+                if (account == null) {
+                    return ResponseDTO.<BaseDTO>builder()
+                            .message("The account doesn't exist !!!")
+                            .statusCode(ResponseCode.RESPONSE_BAD_REQUEST)
+                            .createdTime(LocalDateTime.now())
+                            .build();
+                } else {
+
+                    List<History> listItems = historyRepository.getTransactionListByDay(account.getAccountId(), ((GetTransactionListByDayDTO) baseDTO).getDay(),HistoryAction.WITHDRAW.name(), HistoryAction.RECHARGE.name());
+
+                    return ResponseDTO.<BaseDTO>builder()
+                            .message("Get transactions complete!!!")
+                            .statusCode(ResponseCode.RESPONSE_OK_CODE)
+                            .objectList(mapper.mapToDTOList(listItems, HistoryDTO.class))
+                            .createdTime(LocalDateTime.now())
+                            .build();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseDTO.<BaseDTO>builder()
+                    .message("Get histories fail !!!")
+                    .statusCode(ResponseCode.RESPONSE_ERROR_SERVER_ERROR)
+                    .createdTime(LocalDateTime.now())
+                    .build();
+        }
+    }
+
+    @Override
+    public ResponseDTO<BaseDTO> getListDaysHaveTransaction(BaseDTO baseDTO) {
+        try {
+
+            if (((GetTransactionListByMonthDTO) baseDTO).getAccountUsername() == "") {
+                return ResponseDTO.<BaseDTO>builder()
+                        .message("Please enter the account_username !!!")
+                        .statusCode(ResponseCode.RESPONSE_ERROR_SERVER_ERROR)
+                        .createdTime(LocalDateTime.now())
+                        .build();
+            } else if (((GetTransactionListByMonthDTO) baseDTO).getMonth() == "" ) {
+                return ResponseDTO.<BaseDTO>builder()
+                        .message("Please enter month !!!")
+                        .statusCode(ResponseCode.RESPONSE_ERROR_SERVER_ERROR)
+                        .createdTime(LocalDateTime.now())
+                        .build();
+            } else {
+                Account account = accountRepository.findAccountByAccountUsername(((GetTransactionListByMonthDTO) baseDTO).getAccountUsername());
+                if (account == null) {
+                    return ResponseDTO.<BaseDTO>builder()
+                            .message("The account doesn't exist !!!")
+                            .statusCode(ResponseCode.RESPONSE_BAD_REQUEST)
+                            .createdTime(LocalDateTime.now())
+                            .build();
+                } else {
+
+                    List<Tuple> listItems = historyRepository.getListDaysHaveTransactionsInMonth(account.getAccountId(), ((GetTransactionListByMonthDTO) baseDTO).getMonth(),HistoryAction.WITHDRAW.name(), HistoryAction.RECHARGE.name());
+
+                    List<ListDaysHaveTransactionsInMonthDTO> listDays = listItems.stream().map(
+                            p -> new ListDaysHaveTransactionsInMonthDTO(p.get("history_noted_date", Date.class).toString())
+                    ).collect(Collectors.toList());
+
+
+                    return ResponseDTO.<BaseDTO>builder()
+                            .message("Get transactions complete!!!")
+                            .statusCode(ResponseCode.RESPONSE_OK_CODE)
+                            .objectList(listDays)
+                            .createdTime(LocalDateTime.now())
+                            .build();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseDTO.<BaseDTO>builder()
+                    .message("Get transactions fail !!!")
+                    .statusCode(ResponseCode.RESPONSE_ERROR_SERVER_ERROR)
+                    .createdTime(LocalDateTime.now())
+                    .build();
+        }
     }
 
 }

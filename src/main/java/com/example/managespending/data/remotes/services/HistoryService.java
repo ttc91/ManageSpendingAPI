@@ -15,4 +15,9 @@ public interface HistoryService {
     ResponseDTO<BaseDTO> getAllByRechargePieChart(BaseDTO baseDTO);
 
     ResponseDTO<BaseDTO> getAllByWithdrawBarChart(BaseDTO baseDTO);
+
+    ResponseDTO<BaseDTO> getTransactionByWeek(BaseDTO baseDTO);
+    ResponseDTO<BaseDTO> getTransactionByMonth(BaseDTO baseDTO);
+    ResponseDTO<BaseDTO> getTransactionByDay(BaseDTO baseDTO);
+    ResponseDTO<BaseDTO> getListDaysHaveTransaction(BaseDTO baseDTO);
 }

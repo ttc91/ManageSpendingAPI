@@ -47,16 +47,16 @@ public class BudgetServiceImpl extends BaseService<BaseDTO> implements BudgetSer
     @Override
     public ResponseDTO<BaseDTO> create(BaseDTO baseDTO) {
 
-        try{
+        try {
 
-            if(((BudgetDTO) baseDTO).getBudgetName().length() == 0 ||
+            if (((BudgetDTO) baseDTO).getBudgetName().length() == 0 ||
                     ((BudgetDTO) baseDTO).getBudgetName() == null ||
                     ((BudgetDTO) baseDTO).getBudgetValue() == null ||
                     ((BudgetDTO) baseDTO).getBudgetValue().compareTo(BigDecimal.ZERO) == 0 ||
                     ((BudgetDTO) baseDTO).getBudgetMothYear().length() == 0 ||
                     ((BudgetDTO) baseDTO).getBudgetValue() == null ||
-                    ((BudgetDTO) baseDTO).getExpense() == null
-                    ){
+                    ((BudgetDTO) baseDTO).getExpense().getExpenseId() == null
+            ) {
 
                 return ResponseDTO.<BaseDTO>builder()
                         .message("Please in put full budget information !!!")
@@ -68,7 +68,7 @@ public class BudgetServiceImpl extends BaseService<BaseDTO> implements BudgetSer
 
             Account account = accountRepository.findAccountByAccountUsername(((BudgetDTO) baseDTO).getAccount().getAccountUsername());
 
-            if(budgetRepository.findBudgetByAccountAndBudgetName(account, ((BudgetDTO) baseDTO).getBudgetName()) != null){
+            if (budgetRepository.findBudgetByAccountAndBudgetName(account, ((BudgetDTO) baseDTO).getBudgetName()) != null) {
                 return ResponseDTO.<BaseDTO>builder()
                         .message("Budget name is exist !!!")
                         .statusCode(ResponseCode.RESPONSE_ERROR_SERVER_ERROR)
@@ -78,14 +78,14 @@ public class BudgetServiceImpl extends BaseService<BaseDTO> implements BudgetSer
 
             Optional<Expense> expenseOpt = expenseRepository.findById(((BudgetDTO) baseDTO).getExpense().getExpenseId());
 
-            if(!expenseOpt.isPresent()){
+            if (!expenseOpt.isPresent()) {
                 return ResponseDTO.<BaseDTO>builder()
                         .message("Expense is not exist !!!")
                         .statusCode(ResponseCode.RESPONSE_ERROR_SERVER_ERROR)
                         .createdTime(LocalDateTime.now())
                         .build();
-            }else {
-                if(budgetRepository.findBudgetByAccountAndExpense(account, expenseOpt.get()) != null){
+            } else {
+                if (budgetRepository.findBudgetByAccountAndExpense(account, expenseOpt.get()) != null) {
                     return ResponseDTO.<BaseDTO>builder()
                             .message("Expense is exist in another budget so cannot create new budget !!!")
                             .statusCode(ResponseCode.RESPONSE_ERROR_SERVER_ERROR)
@@ -95,7 +95,7 @@ public class BudgetServiceImpl extends BaseService<BaseDTO> implements BudgetSer
             }
 
             String[] str = ((BudgetDTO) baseDTO).getBudgetMothYear().split("-");
-            if(YearMonth.of(Integer.parseInt(str[0]), Integer.parseInt(str[1])).compareTo(YearMonth.now()) < 0){
+            if (YearMonth.of(Integer.parseInt(str[0]), Integer.parseInt(str[1])).compareTo(YearMonth.now()) < 0) {
                 return ResponseDTO.<BaseDTO>builder()
                         .message("Please input again month and year of budget !!!")
                         .statusCode(ResponseCode.RESPONSE_ERROR_SERVER_ERROR)
@@ -126,7 +126,7 @@ public class BudgetServiceImpl extends BaseService<BaseDTO> implements BudgetSer
                     .createdTime(LocalDateTime.now())
                     .build();
 
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return ResponseDTO.<BaseDTO>builder()
                     .message("Create budget fail !!!")
@@ -140,9 +140,9 @@ public class BudgetServiceImpl extends BaseService<BaseDTO> implements BudgetSer
     @Override
     public ResponseDTO<BaseDTO> update(BaseDTO baseDTO) {
 
-        try{
+        try {
 
-            if(((BudgetDTO) baseDTO).getBudgetName().length() == 0 ||
+            if (((BudgetDTO) baseDTO).getBudgetName().length() == 0 ||
                     ((BudgetDTO) baseDTO).getBudgetName() == null ||
                     ((BudgetDTO) baseDTO).getBudgetValue() == null ||
                     ((BudgetDTO) baseDTO).getBudgetValue().compareTo(BigDecimal.ZERO) == 0 ||
@@ -150,7 +150,7 @@ public class BudgetServiceImpl extends BaseService<BaseDTO> implements BudgetSer
                     ((BudgetDTO) baseDTO).getBudgetValue() == null ||
                     ((BudgetDTO) baseDTO).getExpense() == null ||
                     ((BudgetDTO) baseDTO).getBudgetId() == null
-            ){
+            ) {
 
                 return ResponseDTO.<BaseDTO>builder()
                         .message("Please in put full budget information !!!")
@@ -162,7 +162,7 @@ public class BudgetServiceImpl extends BaseService<BaseDTO> implements BudgetSer
 
             Optional<Budget> budgetOpt = budgetRepository.findById(((BudgetDTO) baseDTO).getBudgetId());
 
-            if(!budgetOpt.isPresent()){
+            if (!budgetOpt.isPresent()) {
                 return ResponseDTO.<BaseDTO>builder()
                         .message("Budget is not exist !!!")
                         .statusCode(ResponseCode.RESPONSE_ERROR_SERVER_ERROR)
@@ -173,8 +173,8 @@ public class BudgetServiceImpl extends BaseService<BaseDTO> implements BudgetSer
             Budget budget = budgetOpt.get();
             Account account = accountRepository.findAccountByAccountUsername(((BudgetDTO) baseDTO).getAccount().getAccountUsername());
 
-            if(budgetRepository.findBudgetByAccountAndBudgetName(account, ((BudgetDTO) baseDTO).getBudgetName()) != null
-                && budgetRepository.findBudgetByAccountAndBudgetName(account, ((BudgetDTO) baseDTO).getBudgetName()) != budget ){
+            if (budgetRepository.findBudgetByAccountAndBudgetName(account, ((BudgetDTO) baseDTO).getBudgetName()) != null
+                    && budgetRepository.findBudgetByAccountAndBudgetName(account, ((BudgetDTO) baseDTO).getBudgetName()) != budget) {
                 return ResponseDTO.<BaseDTO>builder()
                         .message("Budget name is exist !!!")
                         .statusCode(ResponseCode.RESPONSE_ERROR_SERVER_ERROR)
@@ -184,15 +184,15 @@ public class BudgetServiceImpl extends BaseService<BaseDTO> implements BudgetSer
 
             Optional<Expense> expenseOpt = expenseRepository.findById(((BudgetDTO) baseDTO).getExpense().getExpenseId());
 
-            if(!expenseOpt.isPresent()){
+            if (!expenseOpt.isPresent()) {
                 return ResponseDTO.<BaseDTO>builder()
                         .message("Expense is not exist !!!")
                         .statusCode(ResponseCode.RESPONSE_ERROR_SERVER_ERROR)
                         .createdTime(LocalDateTime.now())
                         .build();
-            }else {
-                if(budgetRepository.findBudgetByAccountAndExpense(account, expenseOpt.get()) != null &&
-                        budgetRepository.findBudgetByAccountAndExpense(account, expenseOpt.get()) != budget){
+            } else {
+                if (budgetRepository.findBudgetByAccountAndExpense(account, expenseOpt.get()) != null &&
+                        budgetRepository.findBudgetByAccountAndExpense(account, expenseOpt.get()) != budget) {
                     return ResponseDTO.<BaseDTO>builder()
                             .message("Expense is exist in another budget so cannot update budget !!!")
                             .statusCode(ResponseCode.RESPONSE_ERROR_SERVER_ERROR)
@@ -202,7 +202,7 @@ public class BudgetServiceImpl extends BaseService<BaseDTO> implements BudgetSer
             }
 
             String[] str = ((BudgetDTO) baseDTO).getBudgetMothYear().split("-");
-            if(YearMonth.of(Integer.parseInt(str[0]), Integer.parseInt(str[1])).compareTo(YearMonth.now()) < 0){
+            if (YearMonth.of(Integer.parseInt(str[0]), Integer.parseInt(str[1])).compareTo(YearMonth.now()) < 0) {
                 return ResponseDTO.<BaseDTO>builder()
                         .message("Please input again month and year of budget !!!")
                         .statusCode(ResponseCode.RESPONSE_ERROR_SERVER_ERROR)
@@ -232,7 +232,7 @@ public class BudgetServiceImpl extends BaseService<BaseDTO> implements BudgetSer
                     .createdTime(LocalDateTime.now())
                     .build();
 
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return ResponseDTO.<BaseDTO>builder()
                     .message("Update budget fail !!!")
@@ -246,11 +246,11 @@ public class BudgetServiceImpl extends BaseService<BaseDTO> implements BudgetSer
     @Override
     public ResponseDTO<BaseDTO> delete(BaseDTO baseDTO) {
 
-        try{
+        try {
 
             Optional<Budget> budgetOpt = budgetRepository.findById(((BudgetDTO) baseDTO).getBudgetId());
 
-            if(!budgetOpt.isPresent()){
+            if (!budgetOpt.isPresent()) {
                 return ResponseDTO.<BaseDTO>builder()
                         .message("Budget is not exist !!!")
                         .statusCode(ResponseCode.RESPONSE_ERROR_SERVER_ERROR)
@@ -277,7 +277,7 @@ public class BudgetServiceImpl extends BaseService<BaseDTO> implements BudgetSer
                     .createdTime(LocalDateTime.now())
                     .build();
 
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return ResponseDTO.<BaseDTO>builder()
                     .message("Delete budget fail !!!")
@@ -291,11 +291,11 @@ public class BudgetServiceImpl extends BaseService<BaseDTO> implements BudgetSer
     @Override
     public ResponseDTO<BaseDTO> getOne(BaseDTO baseDTO) {
 
-        try{
+        try {
 
             Optional<Budget> opt = budgetRepository.findById(((BudgetDTO) baseDTO).getBudgetId());
 
-            if(!opt.isPresent()){
+            if (!opt.isPresent()) {
                 return ResponseDTO.<BaseDTO>builder()
                         .message("Budget object is not exist !")
                         .statusCode(ResponseCode.RESPONSE_ERROR_SERVER_ERROR)
@@ -312,7 +312,7 @@ public class BudgetServiceImpl extends BaseService<BaseDTO> implements BudgetSer
                     .createdTime(LocalDateTime.now())
                     .build();
 
-        }catch (Exception e) {
+        } catch (Exception e) {
 
             e.printStackTrace();
 
@@ -328,7 +328,7 @@ public class BudgetServiceImpl extends BaseService<BaseDTO> implements BudgetSer
     @Override
     public ResponseDTO<BaseDTO> getAll(BaseDTO baseDTO) {
 
-        try{
+        try {
 
             Account account = accountRepository.findAccountByAccountUsername(((AccountDTO) baseDTO).getAccountUsername());
             List<Budget> budgets = budgetRepository.findAllByAccount(account);
@@ -340,7 +340,7 @@ public class BudgetServiceImpl extends BaseService<BaseDTO> implements BudgetSer
                     .createdTime(LocalDateTime.now())
                     .build();
 
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return ResponseDTO.<BaseDTO>builder()
                     .message("Get budgets fail !!!")
@@ -349,6 +349,50 @@ public class BudgetServiceImpl extends BaseService<BaseDTO> implements BudgetSer
                     .build();
         }
 
+    }
+
+    @Override
+    public ResponseDTO<BaseDTO> getByStatus(BaseDTO baseDTO) {
+        try {
+            if (((BudgetDTO) baseDTO).getBudgetStatus() == null) {
+                return ResponseDTO.<BaseDTO>builder()
+                        .message("Please enter the budget_status !!!")
+                        .statusCode(ResponseCode.RESPONSE_BAD_REQUEST)
+                        .createdTime(LocalDateTime.now())
+                        .build();
+            } else if (((BudgetDTO) baseDTO).getAccount().getAccountUsername() == null) {
+                return ResponseDTO.<BaseDTO>builder()
+                        .message("Please enter the account_name !!!")
+                        .statusCode(ResponseCode.RESPONSE_BAD_REQUEST)
+                        .createdTime(LocalDateTime.now())
+                        .build();
+            } else {
+                Account account = accountRepository.findAccountByAccountUsername(((BudgetDTO) baseDTO).getAccount().getAccountUsername());
+                if (account == null) {
+                    return ResponseDTO.<BaseDTO>builder()
+                            .message("The user doesn't exist !!!")
+                            .statusCode(ResponseCode.RESPONSE_BAD_REQUEST)
+                            .createdTime(LocalDateTime.now())
+                            .build();
+
+                } else {
+                    List<Budget> listBudget = budgetRepository.findBudgetsByAccountAndBudgetStatus(account, ((BudgetDTO) baseDTO).getBudgetStatus());
+                    return ResponseDTO.<BaseDTO>builder()
+                            .message("Get budgets complete !!!")
+                            .statusCode(ResponseCode.RESPONSE_OK_CODE)
+                            .objectList(mapper.mapToDTOList(listBudget, BudgetDTO.class))
+                            .createdTime(LocalDateTime.now())
+                            .build();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseDTO.<BaseDTO>builder()
+                    .message("Get budgets fail !!!")
+                    .statusCode(ResponseCode.RESPONSE_BAD_REQUEST)
+                    .createdTime(LocalDateTime.now())
+                    .build();
+        }
     }
 
 }

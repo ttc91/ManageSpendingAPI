@@ -30,6 +30,6 @@ public class ExpenseDTO extends BaseDTO implements Serializable {
     @JsonBackReference
     private AccountDTO account;
 
-    private List<HistoryDTO> histories;
+//    private List<HistoryDTO> histories;
 
 }

@@ -4,7 +4,7 @@ import com.example.managespending.data.models.dto.AccountDTO;
 import com.example.managespending.data.models.dto.ExpenseDTO;
 import com.example.managespending.data.models.dto.base.BaseDTO;
 import com.example.managespending.data.models.dto.base.ResponseDTO;
-import com.example.managespending.data.remotes.service.ExpenseService;
+import com.example.managespending.data.remotes.services.ExpenseService;
 import com.example.managespending.utils.ApiPaths;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

@@ -38,6 +38,7 @@ public class JwtFilter extends OncePerRequestFilter {
                 username = provider.getUsernameFromToken(token);
             }catch (IllegalArgumentException | ExpiredJwtException e){
                 e.printStackTrace();
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
             }
         }
 

@@ -4,7 +4,7 @@ import com.example.managespending.data.models.dto.AccountDTO;
 import com.example.managespending.data.models.dto.EventDTO;
 import com.example.managespending.data.models.dto.base.BaseDTO;
 import com.example.managespending.data.models.dto.base.ResponseDTO;
-import com.example.managespending.data.remotes.service.EventService;
+import com.example.managespending.data.remotes.services.EventService;
 import com.example.managespending.utils.ApiPaths;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;

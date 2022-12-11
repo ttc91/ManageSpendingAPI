@@ -1,6 +1,6 @@
-package com.example.managespending.data.remotes.service.impl;
+package com.example.managespending.data.remotes.services.impl;
 
-import com.example.managespending.data.mapper.GoalMapper;
+import com.example.managespending.data.mappers.GoalMapper;
 import com.example.managespending.data.models.dto.AccountDTO;
 import com.example.managespending.data.models.dto.GoalDTO;
 import com.example.managespending.data.models.dto.base.BaseDTO;
@@ -13,8 +13,8 @@ import com.example.managespending.data.remotes.repositories.AccountRepository;
 import com.example.managespending.data.remotes.repositories.GoalRepository;
 import com.example.managespending.data.remotes.repositories.HistoryRepository;
 import com.example.managespending.data.remotes.repositories.WalletRepository;
-import com.example.managespending.data.remotes.service.GoalService;
-import com.example.managespending.data.remotes.service.base.BaseService;
+import com.example.managespending.data.remotes.services.GoalService;
+import com.example.managespending.data.remotes.services.base.BaseService;
 import com.example.managespending.utils.ResponseCode;
 import com.example.managespending.utils.enums.HistoryType;
 import org.springframework.beans.factory.annotation.Autowired;

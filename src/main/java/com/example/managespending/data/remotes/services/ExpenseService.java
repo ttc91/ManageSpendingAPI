@@ -1,4 +1,4 @@
-package com.example.managespending.data.remotes.service;
+package com.example.managespending.data.remotes.services;
 
 import com.example.managespending.data.models.dto.base.BaseDTO;
 import com.example.managespending.data.models.dto.base.ResponseDTO;

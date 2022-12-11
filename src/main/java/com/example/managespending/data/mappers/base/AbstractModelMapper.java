@@ -1,4 +1,4 @@
-package com.example.managespending.data.mapper.base;
+package com.example.managespending.data.mappers.base;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;

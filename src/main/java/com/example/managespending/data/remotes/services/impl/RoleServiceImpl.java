@@ -1,13 +1,13 @@
-package com.example.managespending.data.remotes.service.impl;
+package com.example.managespending.data.remotes.services.impl;
 
-import com.example.managespending.data.mapper.RoleMapper;
+import com.example.managespending.data.mappers.RoleMapper;
 import com.example.managespending.data.models.dto.RoleDTO;
 import com.example.managespending.data.models.dto.base.BaseDTO;
 import com.example.managespending.data.models.dto.base.ResponseDTO;
 import com.example.managespending.data.models.entities.Role;
 import com.example.managespending.data.remotes.repositories.RoleRepository;
-import com.example.managespending.data.remotes.service.RoleService;
-import com.example.managespending.data.remotes.service.base.BaseService;
+import com.example.managespending.data.remotes.services.RoleService;
+import com.example.managespending.data.remotes.services.base.BaseService;
 import com.example.managespending.utils.ResponseCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

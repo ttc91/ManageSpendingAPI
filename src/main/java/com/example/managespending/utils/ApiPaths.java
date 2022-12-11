@@ -16,7 +16,7 @@ public interface ApiPaths {
     String MODEL_DELETE_DOMAIN = "/delete";
     String MODEL_GET_ONE_DOMAIN = "/get";
     String MODEL_GET_LIST_DOMAIN = "/get_list";
-    String MODEL_GET_LIST_BY_STATUS = "/get_list_by_status";
+    String MODEL_GET_LIST_BY_EXPIRED = "/get_list_by_expired";
 
 
     String ACCOUNT_SIGN_IN_DOMAIN = "/sign_in";
@@ -31,8 +31,12 @@ public interface ApiPaths {
     String HISTORY_GET_LIST_BY_WITHDRAW_PIE_CHART = "/get_list_by_withdraw_pie";
     String HISTORY_GET_LIST_BY_RECHARGE_PIE_CHART = "/get_list_by_recharge_pie";
     String HISTORY_GET_LIST_BY_WITHDRAW_BAR_CHART = "/get_list_by_withdraw_bar";
-    String HISTORY_GET_LIST_BY_WEEK = "/get_list_by_week";
-    String HISTORY_GET_LIST_BY_MONTH =  "/get_list_by_month";
-    String HISTORY_GET_LIST_BY_DAY =  "/get_list_by_day";
+    String HISTORY_GET_LIST_BY_EVENT = "/get_list_by_event";
+    String HISTORY_GET_LIST_DAY_BY_EVENT =  "/get_list_day_by_event";
+    String HISTORY_GET_LIST_BY_DATE =  "/get_list_by_date";
     String HISTORY_GET_LIST_DAY_IN_MONTH =  "/get_list_day_in_month";
+    String HISTORY_GET_TOTAL_COST_OF_WITHDRAW = "/get_total_cost_of_withdraw";
+    String HISTORY_GET_TOTAL_COST_OF_RECHARGE = "/get_total_cost_of_recharge";
+    String HISTORY_GET_TOTAL_COST_BY_EVENT = "/get_total_cost_by_event";
+    String HISTORY_GET_TOTAL_COST_BETWEEN_DATE = "/get_total_cost_between_date";
 }

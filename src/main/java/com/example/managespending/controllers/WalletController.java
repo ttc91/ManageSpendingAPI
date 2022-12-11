@@ -75,7 +75,6 @@ public class WalletController {
 
     @GetMapping(value =  ApiPaths.MODEL_GET_ONE_DOMAIN)
     public ResponseEntity<ResponseDTO<BaseDTO>> getOne(@RequestBody WalletDTO request){
-
         try{
             return new ResponseEntity<>(service.getOne(request), HttpStatus.OK);
         }catch (Exception e){

@@ -3,7 +3,8 @@ package com.example.managespending.utils.enums;
 public enum GetDateType {
 
     WEEK ("week"),
-    MONTH ("month");
+    MONTH ("month"),
+    DAY("day");
 
     public final String value;
 

@@ -8,15 +8,18 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.util.Date;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class GetTransactionListByDayDTO extends BaseDTO implements Serializable {
+public class GetListDayHaveTransactionDTO extends BaseDTO implements Serializable {
 
     private String accountUsername;
 
     @JsonFormat(pattern = "yyyy-MM-dd")
-    private String day;
+    private String date;
+
+    private Long eventId;
 }

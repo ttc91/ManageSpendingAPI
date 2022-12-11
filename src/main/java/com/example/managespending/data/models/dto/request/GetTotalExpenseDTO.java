@@ -2,6 +2,7 @@ package com.example.managespending.data.models.dto.request;
 
 import com.example.managespending.data.models.dto.base.BaseDTO;
 import com.example.managespending.utils.enums.GetDateType;
+import com.example.managespending.utils.enums.HistoryAction;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;

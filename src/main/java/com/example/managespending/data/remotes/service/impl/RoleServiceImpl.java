@@ -27,7 +27,6 @@ public class RoleServiceImpl extends BaseService<BaseDTO> implements RoleService
     public ResponseDTO<BaseDTO> create(BaseDTO baseDTO) {
 
         try {
-
             if (((RoleDTO) baseDTO).getRoleName().length() == 0 || ((RoleDTO) baseDTO).getRoleName() == null) {
 
                 return ResponseDTO.<BaseDTO>builder()

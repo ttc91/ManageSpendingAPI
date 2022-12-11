@@ -91,7 +91,7 @@ public class GoalController {
 
     }
 
-    @GetMapping(value = ApiPaths.MODEL_GET_LIST_BY_STATUS)
+    @GetMapping(value = ApiPaths.MODEL_GET_LIST_BY_EXPIRED)
     public ResponseEntity<ResponseDTO<BaseDTO>> getByStatus(@RequestBody GoalDTO request){
         try{
             return new ResponseEntity<>(service.getByStatus(request), HttpStatus.OK);

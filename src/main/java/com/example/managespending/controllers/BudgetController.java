@@ -9,7 +9,6 @@ import com.example.managespending.utils.ApiPaths;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.ValidationAnnotationUtils;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -79,10 +78,10 @@ public class BudgetController {
     }
 
 
-    @GetMapping(value = ApiPaths.MODEL_GET_LIST_BY_STATUS)
+    @GetMapping(value = ApiPaths.MODEL_GET_LIST_BY_EXPIRED)
     public ResponseEntity<ResponseDTO<BaseDTO>> getByStatus(@RequestBody BudgetDTO request) {
         try {
-            return new ResponseEntity<>(service.getByStatus(request), HttpStatus.OK);
+            return new ResponseEntity<>(service.getByExpired(request), HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

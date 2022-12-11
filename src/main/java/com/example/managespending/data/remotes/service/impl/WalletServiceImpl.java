@@ -194,8 +194,8 @@ public class WalletServiceImpl extends BaseService<BaseDTO> implements WalletSer
     public ResponseDTO<BaseDTO> getOne(BaseDTO baseDTO) {
 
         try{
-
             Wallet wallet = walletRepository.findById(((WalletDTO) baseDTO).getWalletId()).get();
+
             return ResponseDTO.<BaseDTO>builder()
                     .message("Get wallet complete !!!")
                     .statusCode(ResponseCode.RESPONSE_OK_CODE)

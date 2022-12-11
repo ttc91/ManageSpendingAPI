@@ -6,7 +6,6 @@ import com.example.managespending.data.models.dto.base.BaseDTO;
 import com.example.managespending.data.models.dto.base.ResponseDTO;
 import com.example.managespending.data.remotes.service.EventService;
 import com.example.managespending.utils.ApiPaths;
-import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -81,7 +80,7 @@ public class EventController {
     }
 
 
-    @GetMapping(value = ApiPaths.MODEL_GET_LIST_BY_STATUS)
+    @GetMapping(value = ApiPaths.MODEL_GET_LIST_BY_EXPIRED)
     public ResponseEntity<ResponseDTO<BaseDTO>> getByStatus(@RequestBody EventDTO request){
         try{
             return new ResponseEntity<>(service.getByStatus(request), HttpStatus.OK);

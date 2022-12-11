@@ -352,9 +352,9 @@ public class BudgetServiceImpl extends BaseService<BaseDTO> implements BudgetSer
     }
 
     @Override
-    public ResponseDTO<BaseDTO> getByStatus(BaseDTO baseDTO) {
+    public ResponseDTO<BaseDTO> getByExpired(BaseDTO baseDTO) {
         try {
-            if (((BudgetDTO) baseDTO).getBudgetStatus() == null) {
+            if (((BudgetDTO) baseDTO).getBudgetExpired() == null) {
                 return ResponseDTO.<BaseDTO>builder()
                         .message("Please enter the budget_status !!!")
                         .statusCode(ResponseCode.RESPONSE_BAD_REQUEST)
@@ -376,7 +376,9 @@ public class BudgetServiceImpl extends BaseService<BaseDTO> implements BudgetSer
                             .build();
 
                 } else {
-                    List<Budget> listBudget = budgetRepository.findBudgetsByAccountAndBudgetStatus(account, ((BudgetDTO) baseDTO).getBudgetStatus());
+
+                    List<Budget> listBudget = budgetRepository.findBudgetsByAccountAndBudgetExpired(account, ((BudgetDTO) baseDTO).getBudgetExpired());
+
                     return ResponseDTO.<BaseDTO>builder()
                             .message("Get budgets complete !!!")
                             .statusCode(ResponseCode.RESPONSE_OK_CODE)
